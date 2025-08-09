@@ -22,9 +22,7 @@ exports.addCardToDeck = async (req, res) => {
             hint,
             category
         });
-
         const savedCard = await newCard.save();
-
         // Update deck's size (denormalized count)
         await Deck.findByIdAndUpdate(deckId, { $inc: { size: 1 } });
 
@@ -68,9 +66,7 @@ exports.submitCardReview = async (req, res) => {
         if (deck.user_id.toString() !== req.user.id) {
             return res.status(401).json({ message: 'User not authorized for this card' });
         }
-        
         let currentFreq = card.frequency;
-
         if (hintWasShown) {
             if (retrievalLevel === 'medium') currentFreq += 1;
             if (retrievalLevel === 'hard') currentFreq += 2;
@@ -78,24 +74,21 @@ exports.submitCardReview = async (req, res) => {
             if (retrievalLevel === 'easy') currentFreq -= 1;
             if (retrievalLevel === 'hard') currentFreq += 1;
         }
-        
         card.frequency = Math.max(1, Math.min(5, currentFreq));
-
         await card.save();
         res.json(card);
-
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-// @desc    Update a card's details
+// @desc    Update card details
 // @route   PATCH /api/cards/:id
 // @access  Private
 exports.updateCard = async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = req.body; // e.g., { name, definition, hint }
+        const updates = req.body; 
 
         let card = await Card.findById(id);
         if (!card) return res.status(404).json({ message: 'Card not found' });
@@ -104,10 +97,7 @@ exports.updateCard = async (req, res) => {
         if (deck.user_id.toString() !== req.user.id) {
             return res.status(401).json({ message: 'User not authorized' });
         }
-
-        // Update fields that are present in the request body
         Object.keys(updates).forEach(key => card[key] = updates[key]);
-        
         const updatedCard = await card.save();
         res.json(updatedCard);
 
@@ -116,7 +106,7 @@ exports.updateCard = async (req, res) => {
     }
 };
 
-// @desc    Delete a card
+// @desc    Delete card
 // @route   DELETE /api/cards/:id
 // @access  Private
 exports.deleteCard = async (req, res) => {
@@ -125,19 +115,13 @@ exports.deleteCard = async (req, res) => {
         const card = await Card.findById(id);
 
         if (!card) return res.status(404).json({ message: 'Card not found' });
-
         const deck = await Deck.findById(card.deck_id);
         if (deck.user_id.toString() !== req.user.id) {
             return res.status(401).json({ message: 'User not authorized' });
         }
-
         await card.deleteOne();
-
-        // Decrement the deck's size
         await Deck.findByIdAndUpdate(card.deck_id, { $inc: { size: -1 } });
-
         res.json({ message: 'Card removed successfully' });
-
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
