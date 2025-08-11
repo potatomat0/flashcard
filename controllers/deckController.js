@@ -112,7 +112,7 @@ exports.createReviewSession = async (req, res) => {
             return res.status(404).json({ message: 'Deck not found or user not authorized' });
         }
 
-        const allCards = await Deck.find({ deck_id: deckId });
+        const allCards = await Card.find({ deck_id: deckId });
         const deckSize = allCards.length;
 
         if (deckSize === 0) {

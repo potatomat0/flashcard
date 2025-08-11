@@ -192,95 +192,43 @@ All endpoints in this section require authentication.
 
 **Endpoint:** `POST /api/decks/{deckId}/review-session`
 
-**Description:** Generates a customized review session with one or more review methods. The server selects a pool of cards using a weighted random algorithm and then assigns them to the requested methods.
+**Description:** Generates a customized review session. The logic is designed to create a varied session where different review methods draw from a common, shared pool of cards.
+
+**Core Logic:**
+1.  The server determines the required size of a shared **"session pool"** by finding the *largest* number requested for any single method.
+2.  It generates this session pool using the weighted random selection algorithm. If the required size is larger than the deck size, it will include all cards at least once before adding more weighted selections.
+3.  For each method in the request (e.g., `flashcard`, `mcq`), the server then draws the specified number of items by **randomly sampling from the shared session pool**.
+
+**Key Behavior:** Because all methods draw from the same shared pool, it is expected that the **same card may appear in multiple formats** (e.g., as a flashcard and as an MCQ) within the same review session. This is by design.
+
+**Default Behavior:** If the request body is empty (`{}`), the endpoint will automatically create a `flashcard` review session. The session size will be 10, or the total number of cards in the deck if it is less than 10.
 
 ---
 
-#### **Example 1: Default Flashcard Review**
-If the request body is empty (`{}`), the endpoint will automatically create a `flashcard` review session. The session size will be 10, or the total number of cards in the deck if it is less than 10.
+#### **Example: Custom Multi-Method Review**
 
 *   **Request Body:**
-    ```json
-    {}
-    ```
-
-*   **Example Response (for a deck with 6 cards):**
+    *Request 3 flashcards and 3 multiple-choice questions from a deck that contains 5 total cards.*
     ```json
     {
-      "flashcard": [
-        {
-          "_id": "6899aa039317ad991f7bf5f4",
-          "deck_id": "6899a7cb9317ad991f7bf5ef",
-          "name": "Hola",
-          "definition": "Hello",
-          "frequency": 3,
-          "...": "..."
-        },
-        {
-          "_id": "6899b412478572ba3c60efda",
-          "deck_id": "6899a7cb9317ad991f7bf5ef",
-          "name": "Adiós",
-          "definition": "Goodbye",
-          "frequency": 3,
-          "...": "..."
-        }
-      ]
-    }
-    ```
-
----
-
-#### **Example 2: Custom Multi-Method Review**
-Provide a JSON object where keys are the desired review methods (`flashcard`, `mcq`, `fillInTheBlank`) and values are the number of cards for each.
-
-*   **Request Body:**
-    *Request 2 flashcards and 3 multiple-choice questions.*
-    ```json
-    {
-      "flashcard": 2,
+      "flashcard": 3,
       "mcq": 3
     }
     ```
+    *The server will create a shared session pool of 3 cards. Both the `flashcard` and `mcq` arrays will be random selections from that same pool of 3.*
 
 *   **Example Response:**
-    *The server returns an object with keys for each requested method, containing arrays of the generated review items.*
     ```json
     {
       "flashcard": [
-        {
-          "_id": "6899aa039317ad991f7bf5f4",
-          "deck_id": "...",
-          "name": "Hola",
-          "definition": "Hello",
-          "...": "..."
-        },
-        {
-          "_id": "6899b412478572ba3c60efda",
-          "deck_id": "...",
-          "name": "Adiós",
-          "definition": "Goodbye",
-          "...": "..."
-        }
+        { "_id": "card_A", ... },
+        { "_id": "card_B", ... },
+        { "_id": "card_C", ... }
       ],
       "mcq": [
-        {
-          "card_id": "6899b412478572ba3c60efdc",
-          "prompt": "Por favor",
-          "options": ["No", "Goodbye", "Please", "Hello"],
-          "correctAnswer": "Please"
-        },
-        {
-          "card_id": "6899b412478572ba3c60efdb",
-          "prompt": "Gracias",
-          "options": ["Goodbye", "No", "Hello", "Thank you"],
-          "correctAnswer": "Thank you"
-        },
-        {
-          "card_id": "6899b412478572ba3c60efde",
-          "prompt": "No",
-          "options": ["No", "Thank you", "Yes", "Goodbye"],
-          "correctAnswer": "No"
-        }
+        { "card_id": "card_C", "prompt": "Name C", ... },
+        { "card_id": "card_A", "prompt": "Name A", ... },
+        { "card_id": "card_B", "prompt": "Name B", ... }
       ]
     }
     ```
