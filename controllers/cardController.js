@@ -1,32 +1,44 @@
 const Card = require('../models/Card');
 const Deck = require('../models/Deck');
 
-// @desc    Thêm một card vào deck 
+// @desc    Thêm một hoặc nhiều card vào deck
 // @route   POST /api/decks/:deckId/cards
 // @access  Private
 exports.addCardToDeck = async (req, res) => {
     try {
         const { deckId } = req.params;
-        const { name, definition, hint, category } = req.body;
+        const cardsData = req.body; // Can be a single object or an array of objects
 
-        // Xác thực người dùng sở hữu deck 
+        // Xác thực người dùng sở hữu deck
         const deck = await Deck.findById(deckId);
         if (!deck || deck.user_id.toString() !== req.user.id) {
             return res.status(404).json({ message: 'Deck not found or user not authorized' });
         }
 
-        const newCard = new Card({
-            deck_id: deckId,
-            name,
-            definition,
-            hint,
-            category
-        });
-        const savedCard = await newCard.save();
-        // Update deck's size (denormalized count)
-        await Deck.findByIdAndUpdate(deckId, { $inc: { size: 1 } });
+        // Standardize input to be an array
+        const cardsArray = Array.isArray(cardsData) ? cardsData : [cardsData];
 
-        res.status(201).json(savedCard);
+        if (cardsArray.length === 0) {
+            return res.status(400).json({ message: 'Request body must contain at least one card.' });
+        }
+
+        // Prepare cards for insertion
+        const newCards = cardsArray.map(card => ({
+            deck_id: deckId,
+            name: card.name,
+            definition: card.definition,
+            hint: card.hint,
+            category: card.category
+        }));
+
+        // Insert cards into the database
+        const savedCards = await Card.insertMany(newCards);
+
+        // Atomically update the deck's size
+        await Deck.findByIdAndUpdate(deckId, { $inc: { size: savedCards.length } });
+
+        // If only one card was sent, return it as an object, otherwise return the array
+        res.status(201).json(savedCards.length === 1 ? savedCards[0] : savedCards);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
