@@ -112,105 +112,107 @@ exports.createReviewSession = async (req, res) => {
             return res.status(404).json({ message: 'Deck not found or user not authorized' });
         }
 
-        const allCards = await Card.find({ deck_id: deckId });
-        if (allCards.length === 0) {
+        const allCards = await Deck.find({ deck_id: deckId });
+        const deckSize = allCards.length;
+
+        if (deckSize === 0) {
             return res.status(400).json({ message: 'Cannot start a review on an empty deck.' });
         }
 
-        const requestedMethods = req.body;
-        const validMethods = ['flashcard', 'mcq', 'fillInTheBlank'];
-        let totalSize = 0;
+        let requestedMethods = req.body;
 
         // If the request body is empty, apply default flashcard review logic
         if (Object.keys(requestedMethods).length === 0) {
-            const deckSize = allCards.length;
-            if (deckSize > 0) {
-                requestedMethods.flashcard = Math.min(deckSize, 10);
-            }
+            requestedMethods = { flashcard: Math.min(deckSize, 10) };
         }
-        
+
+        const validMethods = ['flashcard', 'mcq', 'fillInTheBlank'];
+        let largestMethodSize = 0;
+
         for (const method in requestedMethods) {
             if (!validMethods.includes(method) || !Number.isInteger(requestedMethods[method]) || requestedMethods[method] < 0) {
                 return res.status(400).json({ message: `Invalid method or size for: ${method}` });
             }
-            totalSize += requestedMethods[method];
+            if (requestedMethods[method] > largestMethodSize) {
+                largestMethodSize = requestedMethods[method];
+            }
         }
 
-        if (totalSize === 0) {
+        if (largestMethodSize === 0) {
             return res.status(400).json({ message: 'Review session must have at least one card.' });
         }
-        if (totalSize > allCards.length) {
-            return res.status(400).json({ message: `Requested size (${totalSize}) is larger than the number of cards in the deck (${allCards.length}).` });
-        }
-        if (requestedMethods.mcq && allCards.length < 4) {
+        if (requestedMethods.mcq && deckSize < 4) {
             return res.status(400).json({ message: 'MCQ method requires at least 4 cards in the deck to generate distractors.' });
         }
 
-        // 1. Create a weighted pool of all cards
-        let weightedPool = [];
-        allCards.forEach(card => {
-            for (let i = 0; i < (card.frequency || 3); i++) {
-                weightedPool.push(card);
+        // 1. Create the session pool based on the largest requested method size
+        let sessionPool = [];
+        if (largestMethodSize >= deckSize) {
+            // If requested size is larger than deck, include all cards at least once
+            sessionPool = [...allCards]; // Add all unique cards
+            const remainingSlots = largestMethodSize - deckSize;
+            if (remainingSlots > 0) {
+                // Create a weighted pool for the remaining slots
+                let weightedPool = [];
+                allCards.forEach(card => {
+                    for (let i = 0; i < (card.frequency || 3); i++) weightedPool.push(card);
+                });
+                // Fill remaining slots with weighted random cards
+                for (let i = 0; i < remainingSlots; i++) {
+                    const randomIndex = Math.floor(Math.random() * weightedPool.length);
+                    sessionPool.push(weightedPool[randomIndex]);
+                }
             }
-        });
-
-        // 2. Shuffle the weighted pool to randomize selection
-        for (let i = weightedPool.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [weightedPool[i], weightedPool[j]] = [weightedPool[j], weightedPool[i]];
+        } else {
+            // If requested size is smaller than deck, use weighted selection for all slots
+            let weightedPool = [];
+            allCards.forEach(card => {
+                for (let i = 0; i < (card.frequency || 3); i++) weightedPool.push(card);
+            });
+            // Shuffle to randomize
+            for (let i = weightedPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [weightedPool[i], weightedPool[j]] = [weightedPool[j], weightedPool[i]];
+            }
+            sessionPool = [...new Set(weightedPool)].slice(0, largestMethodSize);
         }
 
-        // 3. Select a unique set of cards for the session pool
-        const sessionPool = [...new Set(weightedPool)].slice(0, totalSize);
-        
-        // 4. Shuffle the final session pool to randomize method assignment
-        for (let i = sessionPool.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [sessionPool[i], sessionPool[j]] = [sessionPool[j], sessionPool[i]];
-        }
-
-        // 5. Assign cards to methods and format the response
+        // 2. Build the response by drawing from the shared session pool
         const response = {};
-        let poolIndex = 0;
+        for (const method in requestedMethods) {
+            const count = requestedMethods[method];
+            if (count === 0) continue;
 
-        if (requestedMethods.flashcard > 0) {
-            response.flashcard = sessionPool.slice(poolIndex, poolIndex + requestedMethods.flashcard);
-            poolIndex += requestedMethods.flashcard;
-        }
+            // Shuffle the pool and take the required number of cards for the current method
+            const methodCards = [...sessionPool].sort(() => 0.5 - Math.random()).slice(0, count);
 
-        if (requestedMethods.mcq > 0) {
-            const mcqCards = sessionPool.slice(poolIndex, poolIndex + requestedMethods.mcq);
-            poolIndex += requestedMethods.mcq;
-            response.mcq = mcqCards.map(card => {
-                // Generate 3 unique distractors
-                const distractors = allCards
-                    .filter(c => c._id.toString() !== card._id.toString()) // Exclude the correct card
-                    .sort(() => 0.5 - Math.random()) // Shuffle to get random distractors
-                    .slice(0, 3)
-                    .map(c => c.definition);
-                
-                const options = [card.definition, ...distractors].sort(() => 0.5 - Math.random()); // Shuffle all options
-
-                return {
-                    card_id: card._id,
-                    prompt: card.name,
-                    options: options,
-                    correctAnswer: card.definition
-                };
-            });
-        }
-        
-        if (requestedMethods.fillInTheBlank > 0) {
-            const fillCards = sessionPool.slice(poolIndex, poolIndex + requestedMethods.fillInTheBlank);
-            poolIndex += requestedMethods.fillInTheBlank;
-            response.fillInTheBlank = fillCards.map(card => {
-                const showName = Math.random() > 0.5;
-                return {
-                    card_id: card._id,
-                    prompt: showName ? card.name : card.definition,
-                    correctAnswer: showName ? card.definition : card.name
-                };
-            });
+            if (method === 'flashcard') {
+                response.flashcard = methodCards;
+            } else if (method === 'mcq') {
+                response.mcq = methodCards.map(card => {
+                    const distractors = allCards
+                        .filter(c => c._id.toString() !== card._id.toString())
+                        .sort(() => 0.5 - Math.random())
+                        .slice(0, 3)
+                        .map(c => c.definition);
+                    const options = [card.definition, ...distractors].sort(() => 0.5 - Math.random());
+                    return {
+                        card_id: card._id,
+                        prompt: card.name,
+                        options: options,
+                        correctAnswer: card.definition
+                    };
+                });
+            } else if (method === 'fillInTheBlank') {
+                response.fillInTheBlank = methodCards.map(card => {
+                    const showName = Math.random() > 0.5;
+                    return {
+                        card_id: card._id,
+                        prompt: showName ? card.name : card.definition,
+                        correctAnswer: showName ? card.definition : card.name
+                    };
+                });
+            }
         }
 
         res.json(response);
