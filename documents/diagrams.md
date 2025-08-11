@@ -89,6 +89,32 @@ sequenceDiagram
     Note over User: User continues with the next card in the session...
 ```
 
+## Flowchart for Review Session Generation
+This flowchart shows how the backend generates a custom review session based on user-specified methods and sizes.
+
+```mermaid
+graph TD
+    A[Start: User requests a review session] --> B["Client sends request:<br>POST /api/decks/{id}/review-session<br>Body: { flashcard: 10, mcq: 5 }"];
+    B --> C[Server: Validate Deck Ownership & Request Body];
+    C --> D[Server: Calculate `totalSize` (e.g., 10 + 5 = 15)];
+    D --> E[Server: Fetch all cards from the specified deck];
+    E --> F["Server: Create a weighted pool of cards<br>based on each card's 'frequency' score"];
+    F --> G["Server: Shuffle the weighted pool<br>and select `totalSize` unique cards for the session"];
+    G --> H[Server: Shuffle the final session pool of 15 cards];
+    
+    H --> I{Assign cards to methods};
+    I -- flashcard: 10 --> J["Take first 10 cards from pool<br>Format as standard card objects"];
+    I -- mcq: 5 --> K["Take next 5 cards from pool"];
+    
+    K --> L["For each of the 5 cards:<br>1. Get 3 random distractor definitions<br>2. Create MCQ question object<br>3. Shuffle answer options"];
+    
+    J --> M[Build Final Response Object];
+    L --> M;
+    
+    M --> N["Server sends response:<br>{ flashcard: [...], mcq: [...] }"];
+    N --> O[End];
+```
+
 ## Interaction Diagram (for Card Review)
 ```mermaid
 sequenceDiagram

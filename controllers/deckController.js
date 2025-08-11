@@ -106,34 +106,116 @@ exports.deleteDeck = async (req, res) => {
 // @access  Private
 exports.createReviewSession = async (req, res) => {
     try {
-        const deck = await Deck.findById(req.params.id);
+        const { id: deckId } = req.params;
+        const deck = await Deck.findById(deckId);
         if (!deck || deck.user_id.toString() !== req.user.id) {
             return res.status(404).json({ message: 'Deck not found or user not authorized' });
         }
 
-        const { reviewSize = 10 } = req.body; // Default to 10 cards
-        const allCards = await Card.find({ deck_id: req.params.id });
-
+        const allCards = await Card.find({ deck_id: deckId });
         if (allCards.length === 0) {
-            return res.status(400).json({ message: 'Cannot start a review on an empty deck.' }); }
-        // --- TẠO POOL, MỖI LÁ ĐƯỢC THÊM VÀO FREQUENCY LẦN ---
-        let weightedPool = [];
-        for (const card of allCards) { for (let i = 0; i < card.frequency; i++) {
-                weightedPool.push(card);
-            }
+            return res.status(400).json({ message: 'Cannot start a review on an empty deck.' });
         }
 
-        // Xáo trộn bộ bài 
+        const requestedMethods = req.body;
+        const validMethods = ['flashcard', 'mcq', 'fillInTheBlank'];
+        let totalSize = 0;
+
+        // If the request body is empty, apply default flashcard review logic
+        if (Object.keys(requestedMethods).length === 0) {
+            const deckSize = allCards.length;
+            if (deckSize > 0) {
+                requestedMethods.flashcard = Math.min(deckSize, 10);
+            }
+        }
+        
+        for (const method in requestedMethods) {
+            if (!validMethods.includes(method) || !Number.isInteger(requestedMethods[method]) || requestedMethods[method] < 0) {
+                return res.status(400).json({ message: `Invalid method or size for: ${method}` });
+            }
+            totalSize += requestedMethods[method];
+        }
+
+        if (totalSize === 0) {
+            return res.status(400).json({ message: 'Review session must have at least one card.' });
+        }
+        if (totalSize > allCards.length) {
+            return res.status(400).json({ message: `Requested size (${totalSize}) is larger than the number of cards in the deck (${allCards.length}).` });
+        }
+        if (requestedMethods.mcq && allCards.length < 4) {
+            return res.status(400).json({ message: 'MCQ method requires at least 4 cards in the deck to generate distractors.' });
+        }
+
+        // 1. Create a weighted pool of all cards
+        let weightedPool = [];
+        allCards.forEach(card => {
+            for (let i = 0; i < (card.frequency || 3); i++) {
+                weightedPool.push(card);
+            }
+        });
+
+        // 2. Shuffle the weighted pool to randomize selection
         for (let i = weightedPool.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [weightedPool[i], weightedPool[j]] = [weightedPool[j], weightedPool[i]];
         }
-        // lấy một phần của pool với kích cỡ bằng reviewSize 
-        // Sử dụng Set() để đảm bảo trường hợp reviewSize >= deck.size, mọi thẻ trong deck đều được xuất hiện ít nhất một lần 
-        const sessionCards = [...new Set(weightedPool)];
-        const finalSession = sessionCards.slice(0, reviewSize);
-        res.json(finalSession);
+
+        // 3. Select a unique set of cards for the session pool
+        const sessionPool = [...new Set(weightedPool)].slice(0, totalSize);
+        
+        // 4. Shuffle the final session pool to randomize method assignment
+        for (let i = sessionPool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [sessionPool[i], sessionPool[j]] = [sessionPool[j], sessionPool[i]];
+        }
+
+        // 5. Assign cards to methods and format the response
+        const response = {};
+        let poolIndex = 0;
+
+        if (requestedMethods.flashcard > 0) {
+            response.flashcard = sessionPool.slice(poolIndex, poolIndex + requestedMethods.flashcard);
+            poolIndex += requestedMethods.flashcard;
+        }
+
+        if (requestedMethods.mcq > 0) {
+            const mcqCards = sessionPool.slice(poolIndex, poolIndex + requestedMethods.mcq);
+            poolIndex += requestedMethods.mcq;
+            response.mcq = mcqCards.map(card => {
+                // Generate 3 unique distractors
+                const distractors = allCards
+                    .filter(c => c._id.toString() !== card._id.toString()) // Exclude the correct card
+                    .sort(() => 0.5 - Math.random()) // Shuffle to get random distractors
+                    .slice(0, 3)
+                    .map(c => c.definition);
+                
+                const options = [card.definition, ...distractors].sort(() => 0.5 - Math.random()); // Shuffle all options
+
+                return {
+                    card_id: card._id,
+                    prompt: card.name,
+                    options: options,
+                    correctAnswer: card.definition
+                };
+            });
+        }
+        
+        if (requestedMethods.fillInTheBlank > 0) {
+            const fillCards = sessionPool.slice(poolIndex, poolIndex + requestedMethods.fillInTheBlank);
+            poolIndex += requestedMethods.fillInTheBlank;
+            response.fillInTheBlank = fillCards.map(card => {
+                const showName = Math.random() > 0.5;
+                return {
+                    card_id: card._id,
+                    prompt: showName ? card.name : card.definition,
+                    correctAnswer: showName ? card.definition : card.name
+                };
+            });
+        }
+
+        res.json(response);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error creating review session:', error);
+        res.status(500).json({ message: 'An unexpected error occurred.' });
     }
 };

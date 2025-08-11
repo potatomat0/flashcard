@@ -192,12 +192,45 @@ All endpoints in this section require authentication.
 
 **Endpoint:** `POST /api/decks/{deckId}/review-session`
 
-**Description:** Generates a list of cards for a review session. The cards are selected using a weighted random algorithm based on their `frequency` score, meaning cards you find harder will appear more often.
+**Description:** Generates a customized review session with one or more review methods. The server selects a pool of cards using a weighted random algorithm and then assigns them to the requested methods.
+
+**Default Behavior:** If the request body is empty (`{}`), the endpoint will automatically create a `flashcard` review session. The session size will be 10, or the total number of cards in the deck if it is less than 10.
 
 **Request Body:**
+Provide a JSON object where keys are the desired review methods (`flashcard`, `mcq`, `fillInTheBlank`) and values are the number of cards for each.
+
+*Example: Request 10 flashcards and 5 multiple-choice questions.*
 ```json
 {
-  "reviewSize": 10
+  "flashcard": 10,
+  "mcq": 5
+}
+```
+
+**Success Response (200 OK):**
+The server returns an object with keys for each requested method. Each key holds an array of the generated review items.
+
+*Example Response:*
+```json
+{
+  "flashcard": [
+    {
+      "_id": "64a859c2f1b4c3d2e1f2a3b4",
+      "deck_id": "...",
+      "name": "Hola",
+      "definition": "Hello",
+      "frequency": 3,
+      "...": "..."
+    }
+  ],
+  "mcq": [
+    {
+      "card_id": "64a859c2f1b4c3d2e1f2a3b5",
+      "prompt": "Adiós",
+      "options": ["Goodbye", "Hello", "Thank you", "Sorry"],
+      "correctAnswer": "Goodbye"
+    }
+  ]
 }
 ```
 
