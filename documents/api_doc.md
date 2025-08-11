@@ -194,45 +194,96 @@ All endpoints in this section require authentication.
 
 **Description:** Generates a customized review session with one or more review methods. The server selects a pool of cards using a weighted random algorithm and then assigns them to the requested methods.
 
-**Default Behavior:** If the request body is empty (`{}`), the endpoint will automatically create a `flashcard` review session. The session size will be 10, or the total number of cards in the deck if it is less than 10.
+---
 
-**Request Body:**
+#### **Example 1: Default Flashcard Review**
+If the request body is empty (`{}`), the endpoint will automatically create a `flashcard` review session. The session size will be 10, or the total number of cards in the deck if it is less than 10.
+
+*   **Request Body:**
+    ```json
+    {}
+    ```
+
+*   **Example Response (for a deck with 6 cards):**
+    ```json
+    {
+      "flashcard": [
+        {
+          "_id": "6899aa039317ad991f7bf5f4",
+          "deck_id": "6899a7cb9317ad991f7bf5ef",
+          "name": "Hola",
+          "definition": "Hello",
+          "frequency": 3,
+          "...": "..."
+        },
+        {
+          "_id": "6899b412478572ba3c60efda",
+          "deck_id": "6899a7cb9317ad991f7bf5ef",
+          "name": "Adiós",
+          "definition": "Goodbye",
+          "frequency": 3,
+          "...": "..."
+        }
+      ]
+    }
+    ```
+
+---
+
+#### **Example 2: Custom Multi-Method Review**
 Provide a JSON object where keys are the desired review methods (`flashcard`, `mcq`, `fillInTheBlank`) and values are the number of cards for each.
 
-*Example: Request 10 flashcards and 5 multiple-choice questions.*
-```json
-{
-  "flashcard": 10,
-  "mcq": 5
-}
-```
-
-**Success Response (200 OK):**
-The server returns an object with keys for each requested method. Each key holds an array of the generated review items.
-
-*Example Response:*
-```json
-{
-  "flashcard": [
+*   **Request Body:**
+    *Request 2 flashcards and 3 multiple-choice questions.*
+    ```json
     {
-      "_id": "64a859c2f1b4c3d2e1f2a3b4",
-      "deck_id": "...",
-      "name": "Hola",
-      "definition": "Hello",
-      "frequency": 3,
-      "...": "..."
+      "flashcard": 2,
+      "mcq": 3
     }
-  ],
-  "mcq": [
+    ```
+
+*   **Example Response:**
+    *The server returns an object with keys for each requested method, containing arrays of the generated review items.*
+    ```json
     {
-      "card_id": "64a859c2f1b4c3d2e1f2a3b5",
-      "prompt": "Adiós",
-      "options": ["Goodbye", "Hello", "Thank you", "Sorry"],
-      "correctAnswer": "Goodbye"
+      "flashcard": [
+        {
+          "_id": "6899aa039317ad991f7bf5f4",
+          "deck_id": "...",
+          "name": "Hola",
+          "definition": "Hello",
+          "...": "..."
+        },
+        {
+          "_id": "6899b412478572ba3c60efda",
+          "deck_id": "...",
+          "name": "Adiós",
+          "definition": "Goodbye",
+          "...": "..."
+        }
+      ],
+      "mcq": [
+        {
+          "card_id": "6899b412478572ba3c60efdc",
+          "prompt": "Por favor",
+          "options": ["No", "Goodbye", "Please", "Hello"],
+          "correctAnswer": "Please"
+        },
+        {
+          "card_id": "6899b412478572ba3c60efdb",
+          "prompt": "Gracias",
+          "options": ["Goodbye", "No", "Hello", "Thank you"],
+          "correctAnswer": "Thank you"
+        },
+        {
+          "card_id": "6899b412478572ba3c60efde",
+          "prompt": "No",
+          "options": ["No", "Thank you", "Yes", "Goodbye"],
+          "correctAnswer": "No"
+        }
+      ]
     }
-  ]
-}
-```
+    ```
 
 ### Submit Card Review Result
 
