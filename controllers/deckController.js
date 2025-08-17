@@ -24,8 +24,19 @@ exports.createDeck = async (req, res) => {
 // @access  Private
 exports.getDecks = async (req, res) => {
     try {
-        const decks = await Deck.find({ user_id: req.user.id });
-        res.json(decks);
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const skip = (page - 1) * limit;
+
+        const totalDecks = await Deck.countDocuments({ user_id: req.user.id });
+        const decks = await Deck.find({ user_id: req.user.id }).skip(skip).limit(limit);
+
+        res.json({
+            totalPages: Math.ceil(totalDecks / limit),
+            currentPage: page,
+            totalDecks,
+            decks
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

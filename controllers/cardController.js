@@ -50,13 +50,28 @@ exports.addCardToDeck = async (req, res) => {
 exports.getCardsInDeck = async (req, res) => {
     try {
         const { deckId } = req.params;
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const skip = (page - 1) * limit;
+
         const deck = await Deck.findById(deckId);
         if (!deck || deck.user_id.toString() !== req.user.id) {
             return res.status(404).json({ message: 'Deck not found or user not authorized' });
         }
-        const cards = await Card.find({ deck_id: deckId });
-        res.json(cards);
+
+        const totalCards = await Card.countDocuments({ deck_id: deckId });
+        const cards = await Card.find({ deck_id: deckId }).skip(skip).limit(limit);
+
+        res.json({
+            totalPages: Math.ceil(totalCards / limit),
+            currentPage: page,
+            totalCards,
+            cards
+        });
     } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
         res.status(500).json({ message: error.message });
     }
 };

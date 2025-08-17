@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const path = require('path');
 
@@ -33,7 +32,7 @@ const connectDB = async () => {
     console.log('MongoDB Connected...');
   } catch (err) {
     console.error('MongoDB connection ERROR: ', err.message);
-    process.exit(1); // Exit process with failure
+    process.exit(1); 
   }
 };
 
@@ -46,14 +45,13 @@ app.use(express.json());
 // Routes
 const userRoutes = require('./routes/users');
 const deckRoutes = require('./routes/decks');
-const nestedCardRoutes = require('./routes/cards'); // Renamed for clarity
-const cardActionRoutes = require('./routes/cardActions'); // --- ADD THIS
+const nestedCardRoutes = require('./routes/cards'); const cardActionRoutes = require('./routes/cardActions'); 
 
-// ... app setup and middleware
+// ... app setup và middleware
 app.use('/api/users', userRoutes);
 app.use('/api/decks', deckRoutes);
 app.use('/api/decks/:deckId/cards', nestedCardRoutes);
-app.use('/api/cards', cardActionRoutes); // --- ADD THIS 
+app.use('/api/cards', cardActionRoutes);  
 
 
 app.get('/', (req, res) => {

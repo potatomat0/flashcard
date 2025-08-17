@@ -135,7 +135,31 @@ All endpoints in this section require authentication.
 
 **Endpoint:** `GET /api/decks`
 
-**Description:** Retrieves all decks belonging to the authenticated user.
+**Description:** Retrieves all decks belonging to the authenticated user. Supports pagination.
+
+**Query Parameters:**
+- `page` (optional): The page number to retrieve. Defaults to `1`.
+- `limit` (optional): The number of decks per page. Defaults to `10`.
+
+**Success Response (200 OK):**
+```json
+{
+  "totalPages": 5,
+  "currentPage": 1,
+  "totalDecks": 50,
+  "decks": [
+    {
+      "_id": "64a859c2f1b4c3d2e1f2a3b4",
+      "user_id": "64a859c2f1b4c3d2e1f2a3b1",
+      "name": "My First Deck",
+      "description": "An example deck.",
+      "size": 10,
+      "createdAt": "2023-07-07T18:30:00.000Z",
+      "updatedAt": "2023-07-07T18:30:00.000Z"
+    }
+  ]
+}
+```
 
 ### Get Single Deck
 
@@ -170,7 +194,33 @@ All endpoints in this section require authentication.
 
 **Endpoint:** `GET /api/decks/{deckId}/cards`
 
-**Description:** Retrieves all cards belonging to a specific deck.
+**Description:** Retrieves all cards belonging to a specific deck. Supports pagination.
+
+**Query Parameters:**
+- `page` (optional): The page number to retrieve. Defaults to `1`.
+- `limit` (optional): The number of cards per page. Defaults to `10`.
+
+**Success Response (200 OK):**
+```json
+{
+  "totalPages": 2,
+  "currentPage": 1,
+  "totalCards": 15,
+  "cards": [
+    {
+      "_id": "64a859c2f1b4c3d2e1f2a3b5",
+      "deck_id": "64a859c2f1b4c3d2e1f2a3b4",
+      "name": "Card Name",
+      "definition": "Card Definition",
+      "hint": "Card Hint",
+      "category": ["Category1"],
+      "frequency": 3,
+      "createdAt": "2023-07-07T18:30:00.000Z",
+      "updatedAt": "2023-07-07T18:30:00.000Z"
+    }
+  ]
+}
+```
 
 ### Update a Card
 
