@@ -21,6 +21,7 @@ classDiagram
         +ObjectId _id
         +ObjectId user_id
         +String name
+        +Sting URL 
         +String description
         +Number size
         +Date createdAt
@@ -39,7 +40,10 @@ classDiagram
         +ObjectId deck_id
         +String name
         +String definition
+        +String word_type
+        +String url
         +String hint
+        +String[] example
         +String[] category
         +Number frequency
         +Date createdAt

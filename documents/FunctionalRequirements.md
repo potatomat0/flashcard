@@ -58,7 +58,7 @@ This section describes the technical implementation details of the backend syste
 
 #### 2.2.3. `cards` Collection
 -   Stores user-created, personal cards.
--   **Fields:** `_id`, `deck_id` (ref: `decks`), `name`, `definition`, `word_type` (String), `hint`, `example` ([String]), `category` ([String]), `frequency` (1-5), `createdAt`, `updatedAt`.
+-   **Fields:** `_id`, `deck_id` (ref: `decks`), `name`, `definition`, `word_type` (String), `url` (String), `hint`, `example` ([String]), `category` ([String]), `frequency` (1-5), `createdAt`, `updatedAt`.
 
 #### 2.2.4. `defaultdecks` Collection
 -   Stores the universal, pre-loaded decks. Populated by an administrator.
@@ -66,7 +66,7 @@ This section describes the technical implementation details of the backend syste
 
 #### 2.2.5. `defaultcards` Collection
 -   Stores the cards for the default decks.
--   **Fields:** `_id`, `deck_id` (ref: `defaultdecks`), `name`, `definition`, `word_type` (String), `hint`, `example` ([String]), `category` ([String]), `frequency` (1-5), `createdAt`, `updatedAt`.
+-   **Fields:** `_id`, `deck_id` (ref: `defaultdecks`), `name`, `definition`, `word_type` (String), `url` (String), `hint`, `example` ([String]), `category` ([String]), `frequency` (1-5), `createdAt`, `updatedAt`.
 
 ### 2.3. API Functional Requirements
 
@@ -96,3 +96,10 @@ This section describes the technical implementation details of the backend syste
 -   The API for starting a review session is stateless.
 -   It accepts a deck ID and settings, fetches the relevant cards (from either `cards` or `defaultcards` based on the endpoint), and returns a pre-generated session plan to the client.
 -   The API for submitting a review result for a personal card (`POST /api/cards/:cardId/review`) is atomic and updates the card's `frequency` score. This does not apply to default cards.
+
+#### 2.3.6. File Upload
+-   A dedicated endpoint (`POST /api/upload`) handles image uploads.
+-   It uses `multer` to process `multipart/form-data` requests.
+-   The uploaded file is saved to the `/media` directory with a unique name.
+-   The endpoint returns a JSON object with the public URL of the uploaded file (e.g., `{ "filePath": "/media/image-1678886400000.png" }`).
+-   The client then uses this URL when creating or updating a card.

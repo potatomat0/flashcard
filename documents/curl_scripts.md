@@ -147,6 +147,7 @@ curl -X POST http://localhost:5001/api/decks/<deckId>/cards \
 {
   "name": "cURL",
   "definition": "A command-line tool for transferring data with URL syntax.",
+  "url": "/media/image-1678886400000.png",
   "hint": "It is used to test APIs.",
   "example": ["curl -X GET https://api.example.com/users"]
 }
@@ -197,11 +198,6 @@ curl -X PATCH http://localhost:5001/api/cards/<cardId> \
 # Replace <your_jwt_token> and <cardId> with actual values
 curl -X DELETE http://localhost:5001/api/cards/<cardId> \
 -H "Authorization: Bearer <your_jwt_token>"
-```
-
----
-
-## Review Sessions
 
 ### Create Review Session for Personal Deck
 ```bash

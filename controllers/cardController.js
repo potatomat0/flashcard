@@ -29,6 +29,7 @@ exports.addCardToDeck = async (req, res) => {
             name: card.name,
             definition: card.definition,
             word_type: card.word_type,
+            url: card.url,
             hint: card.hint,
             example: card.example,
             category: card.category
@@ -185,6 +186,7 @@ exports.addDefaultCardToDeck = async (req, res) => {
             name: defaultCard.name,
             definition: defaultCard.definition,
             word_type: defaultCard.word_type,
+            url: defaultCard.url,
             hint: defaultCard.hint,
             example: defaultCard.example,
             category: defaultCard.category,

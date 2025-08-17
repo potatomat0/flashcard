@@ -8,8 +8,9 @@
 5. [Personal Deck Management (Private)](#personal-deck-management-private)
 6. [Personal Card Management (Private)](#personal-card-management-private)
 7. [Review Sessions](#review-sessions)
-8. [Error Handling](#error-handling)
-9. [Data Models](#data-models)
+8. [File Upload](#file-upload)
+9. [Error Handling](#error-handling)
+10. [Data Models](#data-models)
 
 ---
 
@@ -84,6 +85,7 @@ All endpoints in this section require authentication.
   "name": "New Card",
   "definition": "The definition of the new card.",
   "word_type": "noun",
+  "url": "/media/image-1678886400000.png",
   "hint": "A hint for the new card.",
   "example": ["An example of how to use the new card.", "Another example."],
   "category": ["new", "card"]
@@ -108,7 +110,30 @@ _(Rest of Card Management is the same)_
 ...
 ---
 
-## Review Sessions
+...
+_(Rest of Review Sessions is the same)_
+...
+---
+
+## File Upload
+
+### Upload an Image
+**Endpoint:** `POST /api/upload`
+**Description:** Uploads an image file. This endpoint accepts `multipart/form-data` requests.
+**Request Body:**
+- Key: `image`
+- Value: The image file to upload.
+**Success Response (200 OK):**
+```json
+{
+  "message": "File uploaded successfully",
+  "filePath": "/media/image-1678886400000.png"
+}
+```
+
+---
+
+## Error Handling
 
 ### Create Review Session for Personal Deck
 **Endpoint:** `POST /api/decks/{deckId}/review-session`
@@ -153,6 +178,7 @@ This is the structure of the data as it's stored in the database.
   "name": "string (required)",
   "definition": "string (required)",
   "word_type": "string (optional)",
+  "url": "string (optional)",
   "hint": "string (optional)",
   "example": "Array<string> (optional)",
   "category": "Array<string> (optional)",
@@ -183,6 +209,7 @@ This is the structure of the data as it's stored in the database.
   "name": "string (required)",
   "definition": "string (required)",
   "word_type": "string (optional)",
+  "url": "string (optional)",
   "hint": "string (optional)",
   "example": "Array<string> (optional)",
   "category": "Array<string> (optional)",

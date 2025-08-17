@@ -5,6 +5,7 @@ const cardSchema = new mongoose.Schema({
 	name: {type: String, required: true},
 	definition: {type: String, required: true},
 	word_type: {type: String, default: ''},
+	url: {type: String, default: ''},
 	hint: {type: String, default: ''},
 	example: {type: [String], default: []},
 	category: {type: [String], default: []},
