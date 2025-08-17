@@ -156,16 +156,23 @@ exports.deleteCard = async (req, res) => {
     }
 };
 
-// @desc    Add a card from a default deck to a user's deck
+// @desc    Add one or more cards from a default deck to a user's personal deck
 // @route   POST /api/decks/:deckId/cards/from-default
 // @access  Private
 exports.addDefaultCardToDeck = async (req, res) => {
     try {
         const { deckId } = req.params;
-        const { defaultCardId } = req.body;
+        const { defaultCardId, defaultCardIds } = req.body;
 
-        if (!defaultCardId) {
-            return res.status(400).json({ message: 'defaultCardId is required.' });
+        let cardIds = [];
+        if (defaultCardIds && Array.isArray(defaultCardIds)) {
+            cardIds = defaultCardIds;
+        } else if (defaultCardId) {
+            cardIds = [defaultCardId];
+        }
+
+        if (cardIds.length === 0) {
+            return res.status(400).json({ message: 'Request body must contain either defaultCardId or defaultCardIds.' });
         }
 
         // 1. Find the user's deck and verify ownership
@@ -174,14 +181,14 @@ exports.addDefaultCardToDeck = async (req, res) => {
             return res.status(404).json({ message: 'Deck not found or user not authorized' });
         }
 
-        // 2. Find the default card to copy
-        const defaultCard = await DefaultCard.findById(defaultCardId);
-        if (!defaultCard) {
-            return res.status(404).json({ message: 'Default card not found' });
+        // 2. Find all the default cards to copy in a single query
+        const defaultCards = await DefaultCard.find({ '_id': { $in: cardIds } });
+        if (defaultCards.length !== cardIds.length) {
+            return res.status(404).json({ message: 'One or more default cards were not found.' });
         }
 
-        // 3. Create a new card by copying the default card's data
-        const newCard = new Card({
+        // 3. Create new cards by copying the default cards' data
+        const newCards = defaultCards.map(defaultCard => ({
             deck_id: deckId,
             name: defaultCard.name,
             definition: defaultCard.definition,
@@ -191,15 +198,16 @@ exports.addDefaultCardToDeck = async (req, res) => {
             example: defaultCard.example,
             category: defaultCard.category,
             // frequency is left to its default value
-        });
+        }));
 
-        // 4. Save the new card
-        const savedCard = await newCard.save();
+        // 4. Insert all new cards into the database
+        const savedCards = await Card.insertMany(newCards);
 
         // 5. Atomically update the deck's size
-        await Deck.findByIdAndUpdate(deckId, { $inc: { size: 1 } });
+        await Deck.findByIdAndUpdate(deckId, { $inc: { size: savedCards.length } });
 
-        res.status(201).json(savedCard);
+        // If only one card was sent, return it as an object, otherwise return the array
+        res.status(201).json(savedCards.length === 1 ? savedCards[0] : savedCards);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

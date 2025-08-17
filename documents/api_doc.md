@@ -232,15 +232,26 @@ All endpoints in this section require authentication.
 ### Add Default Card to Personal Deck
 **Endpoint:** `POST /api/decks/{deckId}/cards/from-default`
 **Authentication:** Required
-**Description:** Copies a card from a public default deck into one of the user's personal decks.
-**Request Body:**
+**Description:** Copies one or more cards from a public default deck into one of the user's personal decks. The request body can contain a single `defaultCardId` or an array of `defaultCardIds`.
+**Request Body (Single Card):**
 ```json
 {
-  "defaultCardId": "64a859c2f1b4c3d2e1f2a3b5"
+  "defaultCardId": "68a17f24de06e4650baffbfe"
+}
+```
+**Request Body (Multiple Cards):**
+```json
+{
+  "defaultCardIds": [
+    "68a17f24de06e4650baffbfe",
+    "68a17f25de06e4650baffc00"
+  ]
 }
 ```
 **Success Response (201 Created):**
+Returns the newly created card object if a single ID was sent, or an array of the newly created card objects if multiple IDs were sent.
 ```json
+// Example response for a single card
 {
     "deck_id": "68a18165de06e4650baffc2a",
     "name": "office",
