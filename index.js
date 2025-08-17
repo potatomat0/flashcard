@@ -40,7 +40,7 @@ connectDB();
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+
 
 // Serve static files from the 'media' directory
 app.use('/media', express.static(path.join(__dirname, 'media')));
@@ -52,17 +52,19 @@ const defaultDeckRoutes = require('./routes/defaultDecks');
 const uploadRoutes = require('./routes/upload');
 const nestedCardRoutes = require('./routes/cards'); const cardActionRoutes = require('./routes/cardActions'); 
 
+const jsonParser = express.json();
+
 // ... app setup và middleware
-app.use('/api/users', userRoutes);
-app.use('/api/decks', deckRoutes);
-app.use('/api/default-decks', defaultDeckRoutes);
+app.use('/api/users', jsonParser, userRoutes);
+app.use('/api/decks', jsonParser, deckRoutes);
+app.use('/api/default-decks', jsonParser, defaultDeckRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/decks/:deckId/cards', nestedCardRoutes);
-app.use('/api/cards', cardActionRoutes);  
+app.use('/api/decks/:deckId/cards', jsonParser, nestedCardRoutes);
+app.use('/api/cards', jsonParser, cardActionRoutes);  
 
 
 app.get('/', (req, res) => {
-    res.send('Flashcard API is running at https://flashcard-rs95.onrender.com/');
+    res.send("Flashcard API is running at https://flashcard-rs95.onrender.com/");
 });
 
 const PORT = process.env.PORT || 5000;
