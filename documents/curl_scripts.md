@@ -76,6 +76,14 @@ curl -X GET http://localhost:5001/api/decks \
 -H "Authorization: Bearer <your_jwt_token>"
 ```
 
+### Get All Decks (Paginated)
+```bash
+# Replace <your_jwt_token> with the actual token from the login response
+# Gets page 2 with 5 decks per page
+curl -X GET "http://localhost:5001/api/decks?page=2&limit=5" 
+-H "Authorization: Bearer <your_jwt_token>"
+```
+
 ### Get Single Deck
 ```bash
 # Replace <your_jwt_token> and <deckId> with actual values
@@ -124,6 +132,14 @@ curl -X POST http://localhost:5001/api/decks/<deckId>/cards \
 ```bash
 # Replace <your_jwt_token> and <deckId> with actual values
 curl -X GET http://localhost:5001/api/decks/<deckId>/cards \
+-H "Authorization: Bearer <your_jwt_token>"
+```
+
+### Get All Cards in Deck (Paginated)
+```bash
+# Replace <your_jwt_token> and <deckId> with actual values
+# Gets page 1 with 10 cards per page
+curl -X GET "http://localhost:5001/api/decks/<deckId>/cards?page=1&limit=10" \
 -H "Authorization: Bearer <your_jwt_token>"
 ```
 

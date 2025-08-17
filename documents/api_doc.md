@@ -131,6 +131,15 @@ All endpoints in this section require authentication.
 
 **Description:** Creates a new flashcard deck for the currently logged-in user.
 
+**Request Body:**
+```json
+{
+  "name": "My New Deck",
+  "description": "A description for my new deck.",
+  "url": "https://example.com/background.jpg"
+}
+```
+
 ### Get All Decks
 
 **Endpoint:** `GET /api/decks`
@@ -171,7 +180,15 @@ All endpoints in this section require authentication.
 
 **Endpoint:** `PATCH /api/decks/{deckId}`
 
-**Description:** Updates a deck's name and/or description. `PATCH` is used for partial updates.
+**Description:** Updates a deck's name, description, and/or url. `PATCH` is used for partial updates.
+
+**Request Body:**
+```json
+{
+  "name": "My Updated Deck Name",
+  "url": "https://example.com/new_background.jpg"
+}
+```
 
 ### Delete a Deck
 
@@ -189,6 +206,17 @@ All endpoints in this section require authentication.
 **Endpoint:** `POST /api/decks/{deckId}/cards`
 
 **Description:** Adds a new flashcard to a specific deck.
+
+**Request Body:**
+```json
+{
+  "name": "New Card",
+  "definition": "The definition of the new card.",
+  "hint": "A hint for the new card.",
+  "example": ["An example of how to use the new card.", "Another example."],
+  "category": ["new", "card"]
+}
+```
 
 ### Get All Cards in Deck
 
@@ -227,6 +255,14 @@ All endpoints in this section require authentication.
 **Endpoint:** `PATCH /api/cards/{cardId}`
 
 **Description:** Updates any field of an existing card.
+
+**Request Body:**
+```json
+{
+  "name": "Updated Card Name",
+  "example": ["A new example."]
+}
+```
 
 ### Delete a Card
 
@@ -332,6 +368,7 @@ This is the structure of the data as it's stored in the database.
   "user_id": "ObjectId (reference to User)",
   "name": "string (required)",
   "description": "string (optional)",
+  "url": "string (optional, for background image)",
   "size": "number (default: 0)",
   "createdAt": "Date",
   "updatedAt": "Date"
@@ -346,6 +383,7 @@ This is the structure of the data as it's stored in the database.
   "name": "string (required)",
   "definition": "string (required)",
   "hint": "string (optional)",
+  "example": "Array<string> (optional)",
   "category": "Array<string> (optional)",
   "frequency": "number (1-5, default: 3)",
   "createdAt": "Date",

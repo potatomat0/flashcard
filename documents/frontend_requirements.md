@@ -43,26 +43,156 @@ The frontend is entirely responsible for managing the user's session.
 
 ### 3.2. Dashboard (`/dashboard`)
 
--   **Data Fetching:** Use React Query to fetch the list of all user decks from the `GET /api/decks` endpoint.
+-   **Data Fetching:** Use React Query to fetch the list of all user decks from the `GET /api/decks` endpoint. See the "Handling Pagination" section for details on fetching paginated data.
 -   **UI:**
     -   Display the decks in a grid or list format. Each deck item should show its name, description, and size.
     -   Clicking a deck should navigate the user to `/decks/:deckId`.
     -   Include a "Create New Deck" button that opens a modal or navigates to a new page with a creation form.
+    -   Display pagination controls (e.g., "First", "Previous", "Next", "Last" buttons) to allow the user to navigate through their decks.
 -   **Mutations:**
     -   After creating a new deck, React Query should automatically refetch the deck list to display the new addition.
     -   Each deck item should have "Edit" and "Delete" buttons. Deleting a deck should trigger a confirmation modal before calling the API. On success, the deck list should be refetched.
 
 ### 3.3. Deck View (`/decks/:deckId`)
 
--   **Data Fetching:** Fetch details for the specific deck and a list of all cards within it from `GET /api/decks/:deckId/cards`.
+-   **Data Fetching:** Fetch details for the specific deck and a list of all cards within it from `GET /api/decks/:deckId/cards`. See the "Handling Pagination" section for details on fetching paginated data.
 -   **UI:**
     -   Display deck information at the top.
     -   Display cards in a table or list.
+    -   Display pagination controls to navigate through the cards in the deck.
     -   Include a "Start Review Session" button.
     -   Include an "Add Card" button that opens a creation modal.
 -   **Mutations:** Handle card creation, updates, and deletions, ensuring the card list is refetched via React Query upon success.
 
 ### 3.4. The Review Session (`/review/:deckId`)
+
+This is the most complex piece of frontend logic.
+
+### 3.5. Handling Pagination
+
+The API provides paginated data for endpoints like `GET /api/decks` and `GET /api/decks/:deckId/cards`. The frontend is responsible for managing the user's current page and rendering the navigation controls.
+
+#### **API Response Structure**
+
+A paginated API response will look like this:
+
+```json
+{
+  "totalPages": 10,
+  "currentPage": 2,
+  "totalDecks": 98,
+  "decks": [
+    { "...deck data..." }
+  ]
+}
+```
+
+-   `totalPages`: The total number of pages available.
+-   `currentPage`: The page of data currently being displayed.
+-   `totalDecks` / `totalCards`: The total number of items.
+-   `decks` / `cards`: The array of items for the current page.
+
+#### **Frontend Logic**
+
+The frontend must maintain the current page number in its state. When the user clicks a navigation button, the frontend updates this state and makes a new API call with the desired page number.
+
+**Example Implementation (React with Hooks)**
+
+This example shows a simplified component for displaying a paginated list of decks.
+
+```jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Your configured Axios instance
+
+const PaginatedDecks = () => {
+  // State to hold the API response data
+  const [data, setData] = useState({ totalPages: 0, currentPage: 0, decks: [] });
+  // State to manage the current page the user wants to see
+  const [page, setPage] = useState(1);
+  // State for loading and error handling
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // useEffect hook to fetch data whenever the 'page' state changes
+  useEffect(() => {
+    const fetchDecks = async () => {
+      setLoading(true);
+      try {
+        // Make the API call with the current page number
+        const response = await axios.get(`/api/decks?page=${page}&limit=10`);
+        setData(response.data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch decks.');
+        setData({ totalPages: 0, currentPage: 0, decks: [] });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDecks();
+  }, [page]); // This effect re-runs whenever 'page' is updated
+
+  // --- Navigation Handlers ---
+
+  const handleFirstPage = () => {
+    setPage(1);
+  };
+
+  const handlePreviousPage = () => {
+    // Decrement page number, but not below 1
+    setPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    // Increment page number, but not beyond the total number of pages
+    setPage((prevPage) => Math.min(prevPage + 1, data.totalPages));
+  };
+
+  const handleLastPage = () => {
+    setPage(data.totalPages);
+  };
+
+  // --- Render Logic ---
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
+  return (
+    <div>
+      <h1>My Decks</h1>
+      <ul>
+        {data.decks.map(deck => (
+          <li key={deck._id}>{deck.name}</li>
+        ))}
+      </ul>
+
+      {/* Pagination Controls */}
+      <div>
+        <button onClick={handleFirstPage} disabled={data.currentPage === 1}>
+          First
+        </button>
+        <button onClick={handlePreviousPage} disabled={data.currentPage === 1}>
+          Previous
+        </button>
+        <span>
+          Page {data.currentPage} of {data.totalPages}
+        </span>
+        <button onClick={handleNextPage} disabled={data.currentPage === data.totalPages}>
+          Next
+        </button>
+        <button onClick={handleLastPage} disabled={data.currentPage === data.totalPages}>
+          Last
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default PaginatedDecks;
+```
+
+This same logic can be applied to any component that needs to display paginated data, such as the list of cards within a deck. Using a library like React Query can further simplify the data fetching, loading, and error handling logic.
 
 This is the most complex piece of frontend logic.
 

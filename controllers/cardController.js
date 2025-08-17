@@ -28,6 +28,7 @@ exports.addCardToDeck = async (req, res) => {
             name: card.name,
             definition: card.definition,
             hint: card.hint,
+            example: card.example,
             category: card.category
         }));
 

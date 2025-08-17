@@ -73,6 +73,7 @@ _id	ObjectId	Primary Key, auto-generated.
 user_id	ObjectId	Required, Indexed. Foreign Key referencing users._id.
 name	String	Required. The name of the deck.
 description	String	Optional description of the deck's content.
+url	String	Optional URL for a background image.
 size	Number	Default: 0. Denormalized count of cards in the deck.
 createdAt	Date	Auto-generated timestamp.
 updatedAt	Date	Auto-generated timestamp, updated on modification.
@@ -84,6 +85,7 @@ deck_id	ObjectId	Required, Indexed. Foreign Key referencing decks._id.
 name	String	Required. The "front" of the card (the term).
 definition	String	Required. The "back" of the card (the meaning).
 hint	String	Optional hint to help the user recall the definition.
+example	[String]	Optional array of example sentences or uses.
 category	[String]	An array of strings for user-defined tags.
 frequency	Number	Required. Min: 1, Max: 5, Default: 3. Spaced repetition score.
 createdAt	Date	Auto-generated timestamp.

@@ -6,10 +6,11 @@ const Card = require('../models/Card');
 // @access  Private
 exports.createDeck = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name, description, url } = req.body;
         const newDeck = new Deck({
             name,
             description,
+            url,
             user_id: req.user.id // This comes from our auth middleware
         });
         const savedDeck = await newDeck.save();
@@ -67,7 +68,7 @@ exports.getDeckById = async (req, res) => {
 // @access  Private
 exports.updateDeck = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name, description, url } = req.body;
         let deck = await Deck.findById(req.params.id);
 
         if (!deck) {
@@ -79,6 +80,7 @@ exports.updateDeck = async (req, res) => {
 
         deck.name = name || deck.name;
         deck.description = description || deck.description;
+        deck.url = url || deck.url;
 
         const updatedDeck = await deck.save();
         res.json(updatedDeck);
