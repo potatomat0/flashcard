@@ -1,26 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-
-// Đọc .env file 
-const envPath = path.resolve(__dirname, '.env');
-if (fs.existsSync(envPath)) {
-  const envConfig = fs.readFileSync(envPath, 'utf8');
-  envConfig.split('\n').forEach(line => {
-    const firstEquals = line.indexOf('=');
-    if (firstEquals !== -1) {
-      const key = line.slice(0, firstEquals).trim();
-      const value = line.slice(firstEquals + 1).trim();
-      if (key) {
-        process.env[key] = value;
-      }
-    }
-  });
-}
-
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
+const helmet = require('helmet');
+const path = require('path');
 
 const app = express();
 
@@ -39,6 +22,7 @@ const connectDB = async () => {
 connectDB();
 
 // Middleware
+app.use(helmet());
 app.use(cors());
 
 

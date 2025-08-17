@@ -245,3 +245,49 @@ graph TD
         V --> W[Kết thúc];
     end
 ```
+
+## Cloud Service Infrastructure
+```mermaid
+graph TB
+    %% Services
+    GH[GitHub Code Repository]
+    RD[Render API & Backend]
+    NF[Netlify Frontend]
+    CD[Cloudinary Media Storage Images & GIFs]
+    CA[Cloud Atlas MongoDB Cluster]
+    
+    %% User and Developer
+    DEV[Developer]
+    USER[Users]
+    
+    %% Developer Workflow
+    DEV -->|Push code changes| GH
+    GH -->|Triggers auto-deploy| RD
+    
+    %% User Workflow
+    USER -->|Interacts with frontend| NF
+    NF -->|Sends API requests| RD
+    RD -->|Media upload/delete| CD
+    RD -->|Database operations| CA
+    
+    %% Response flow
+    CA -.->|Query results| RD
+    CD -.->|Media URLs| RD
+    RD -.->|API responses| NF
+    NF -.->|UI updates| USER
+    
+    %% Styling
+    classDef github fill:#f9f9f9,stroke:#333,stroke-width:2px
+    classDef render fill:#46e3b7,stroke:#333,stroke-width:2px
+    classDef netlify fill:#00c7b7,stroke:#333,stroke-width:2px
+    classDef cloudinary fill:#3448c5,stroke:#333,stroke-width:2px,color:#fff
+    classDef atlas fill:#00ed64,stroke:#333,stroke-width:2px
+    classDef person fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    
+    class GH github
+    class RD render
+    class NF netlify
+    class CD cloudinary
+    class CA atlas
+    class DEV,USER person
+```

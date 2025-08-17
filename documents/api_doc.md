@@ -289,17 +289,57 @@ _(Rest of Review Sessions is the same)_
 
 ### Upload an Image
 **Endpoint:** `POST /api/upload`
-**Description:** Uploads an image file. This endpoint accepts `multipart/form-data` requests.
-**Request Body:**
-- Key: `image`
-- Value: The image file to upload.
+**Description:** Uploads an image file to the cloud storage (Cloudinary) and returns a secure URL. This endpoint is designed to handle image uploads before they are associated with a specific card. The returned URL can then be used in the `url` field when creating or updating a card.
+**Authentication:** This endpoint is currently public and does not require an authentication token.
+
+---
+
+#### **How to Test with Postman:**
+
+1.  **Method:** Set the request method to `POST`.
+2.  **URL:** Enter the request URL, e.g., `http://localhost:5000/api/upload` or the production API URL.
+3.  **Authorization Tab:**
+    -   Set the type to `No Auth`.
+
+4.  **Headers Tab:**
+    -   You do **not** need to set the `Content-Type` header manually. Postman will automatically add `Content-Type: multipart/form-data` when you configure the body as described below.
+
+5.  **Body Tab:**
+    -   Select the `form-data` radio button.
+    -   In the key-value editor section:
+        -   In the **KEY** column, enter `image`.
+        -   Hover over the `image` key you just typed, and a dropdown will appear on the right. Change the type from `Text` to `File`.
+        -   In the **VALUE** column, a **"Select Files"** button will appear. Click it and choose the image file you want to upload from your computer.
+
+    ![Postman Body Configuration](https://i.imgur.com/O9tJ1iH.png)
+
+---
+
+#### **Example `curl` Request:**
+```bash
+curl -X POST \
+  http://localhost:5000/api/upload \
+  -F "image=@/path/to/your/image.png"
+```
+
+---
+
+#### **Responses:**
+
 **Success Response (200 OK):**
+The `filePath` returned is the fully-qualified, secure URL where the image can be accessed on Cloudinary.
 ```json
 {
   "message": "File uploaded successfully",
-  "filePath": "/media/image-1678886400000.png"
+  "filePath": "https://res.cloudinary.com/your_cloud_name/image/upload/v1678886400/media/image-1678886400000.png"
 }
 ```
+
+**Error Responses:**
+-   **400 Bad Request:** If no file is selected (`'Error: No File Selected!'`).
+-   **400 Bad Request:** If the selected file is not an image (`'Error: Images Only!'`).
+-   **400 Bad Request:** If the file size exceeds the 5MB limit.
+
 
 ---
 

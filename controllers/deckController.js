@@ -1,10 +1,12 @@
 const Deck = require('../models/Deck');
 const Card = require('../models/Card');
 
+const asyncHandler = require('../utils/asyncHandler');
+
 // @desc    Tạo một bộ bài mới 
 // @route   POST /api/decks
 // @access  Private
-exports.createDeck = async (req, res) => {
+exports.createDeck = asyncHandler(async (req, res) => {
     try {
         const { name, description, url } = req.body;
         const newDeck = new Deck({
@@ -18,12 +20,12 @@ exports.createDeck = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
+});
 
 // @desc    GET Tất cả bộ bài từ người dùng 
 // @route   GET /api/decks
 // @access  Private
-exports.getDecks = async (req, res) => {
+exports.getDecks = asyncHandler(async (req, res) => {
     try {
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 10;
@@ -41,12 +43,12 @@ exports.getDecks = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
+});
 
 // @desc    GET một bộ bài từ người dùng 
 // @route   GET /api/decks/:id
 // @access  Private
-exports.getDeckById = async (req, res) => {
+exports.getDeckById = asyncHandler(async (req, res) => {
     try {
         const deck = await Deck.findById(req.params.id);
 
@@ -61,12 +63,12 @@ exports.getDeckById = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
+});
 
 // @desc    Update một bộ bài 
 // @route   PATCH /api/decks/:id
 // @access  Private
-exports.updateDeck = async (req, res) => {
+exports.updateDeck = asyncHandler(async (req, res) => {
     try {
         const { name, description, url } = req.body;
         let deck = await Deck.findById(req.params.id);
@@ -87,12 +89,12 @@ exports.updateDeck = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
+});
 
 // @desc    Xóa một bộ bài và các lá bài bên trong 
 // @route   DELETE /api/decks/:id
 // @access  Private
-exports.deleteDeck = async (req, res) => {
+exports.deleteDeck = asyncHandler(async (req, res) => {
     try {
         const deck = await Deck.findById(req.params.id);
 
@@ -112,12 +114,12 @@ exports.deleteDeck = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
+});
 
 // @desc    Tạo một phiên review  
 // @route   POST /api/decks/:id/review-session
 // @access  Private
-exports.createReviewSession = async (req, res) => {
+exports.createReviewSession = asyncHandler(async (req, res) => {
     try {
         const { id: deckId } = req.params;
         const deck = await Deck.findById(deckId);
@@ -233,4 +235,4 @@ exports.createReviewSession = async (req, res) => {
         console.error('Error creating review session:', error);
         res.status(500).json({ message: 'An unexpected error occurred.' });
     }
-};
+});

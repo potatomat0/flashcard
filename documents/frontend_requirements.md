@@ -64,7 +64,42 @@ The frontend is entirely responsible for managing the user's session.
     -   Include an "Add Card" button that opens a creation modal.
 -   **Mutations:** Handle card creation, updates, and deletions, ensuring the card list is refetched via React Query upon success.
 
-### 3.4. The Review Session (`/review/:deckId`)
+### 3.4. Updating a Card's Image
+
+Updating a card's image is a two-step process that requires two separate API calls. This ensures that a file is successfully uploaded and has a valid URL before the card record is updated in the database.
+
+**Step 1: Upload the New Image**
+
+-   **Trigger:** The user clicks an "Edit Image" button on a card and selects a new image file from their device.
+-   **Action:** The frontend immediately sends the selected file to the image upload endpoint.
+-   **API Request:**
+    -   **Method:** `POST`
+    -   **Endpoint:** `/api/upload`
+    -   **Body:** The request body must be `multipart/form-data`, with the image file attached to the `image` key.
+-   **Response Handling:**
+    -   The frontend should display a loading indicator while the upload is in progress.
+    -   Upon a successful response, the frontend must capture the `filePath` (which is the new, permanent URL of the image) from the JSON response.
+
+**Step 2: Update the Card with the New URL**
+
+-   **Trigger:** This step is triggered automatically upon the successful completion of Step 1.
+-   **Action:** The frontend takes the `filePath` URL received from the upload endpoint and uses it to update the card.
+-   **API Request:**
+    -   **Method:** `PATCH`
+    -   **Endpoint:** `/api/cards/{cardId}` (where `{cardId}` is the ID of the card being edited).
+    -   **Body:** The request body is a JSON object containing only the fields to be updated. In this case, it's the `url`.
+      ```json
+      {
+        "url": "https://res.cloudinary.com/your_cloud_name/image/upload/v16.../new_image.png"
+      }
+      ```
+-   **Response Handling:**
+    -   Upon a successful `PATCH` request, the frontend should show a success message.
+    -   Using a library like React Query, the frontend should then automatically refetch the card list for the deck to ensure the UI displays the newly updated image.
+
+This sequence ensures a robust update process and prevents broken image links in the database.
+
+### 3.5. The Review Session (`/review/:deckId`)
 
 This is the most complex piece of frontend logic.
 
