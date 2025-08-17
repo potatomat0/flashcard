@@ -98,8 +98,8 @@ This section describes the technical implementation details of the backend syste
 -   The API for submitting a review result for a personal card (`POST /api/cards/:cardId/review`) is atomic and updates the card's `frequency` score. This does not apply to default cards.
 
 #### 2.3.6. File Upload
--   A dedicated endpoint (`POST /api/upload`) handles image uploads.
--   It uses `multer` to process `multipart/form-data` requests.
--   The uploaded file is saved to the `/media` directory with a unique name.
--   The endpoint returns a JSON object with the public URL of the uploaded file (e.g., `{ "filePath": "/media/image-1678886400000.png" }`).
--   The client then uses this URL when creating or updating a card.
+-   A dedicated endpoint (`POST /api/upload`) handles image uploads using `multer`.
+-   The file is not stored on the application server. It is uploaded directly to a dedicated cloud storage service (Cloudinary).
+-   The cloud service provides a permanent, secure URL for the asset.
+-   The API endpoint returns a JSON object containing this permanent URL (e.g., `{ "filePath": "https://res.cloudinary.com/..." }`).
+-   The client then uses this URL when creating or updating a card or deck.

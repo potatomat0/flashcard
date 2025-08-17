@@ -15,7 +15,7 @@ router.post('/', (req, res) => {
             } else {
                 res.status(200).json({
                     message: 'File uploaded successfully',
-                    filePath: `/media/${req.file.filename}`
+                    filePath: req.file.path // The secure URL is available at req.file.path
                 });
             }
         }

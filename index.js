@@ -62,7 +62,7 @@ app.use('/api/cards', cardActionRoutes);
 
 
 app.get('/', (req, res) => {
-    res.send('Flashcard API is running at port 5001!');
+    res.send('Flashcard API is running at https://flashcard-rs95.onrender.com/');
 });
 
 const PORT = process.env.PORT || 5000;

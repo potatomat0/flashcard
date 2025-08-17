@@ -1,18 +1,25 @@
 const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../utils/cloudinary');
 const path = require('path');
 
-// Set up storage engine
-const storage = multer.diskStorage({
-    destination: './media/',
-    filename: function(req, file, cb){
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
+// Configure Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'media', // The name of the folder in your Cloudinary account
+    format: async (req, file) => {
+        const ext = path.extname(file.originalname).substring(1);
+        return ['png', 'jpg', 'jpeg', 'gif'].includes(ext) ? ext : 'png';
+    }, // supports promises as well
+    public_id: (req, file) => 'image-' + Date.now(), // Creates a unique public_id
+  },
 });
 
 // Initialize upload
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 1000000 }, // Limit file size to 1MB
+    limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
     fileFilter: function(req, file, cb){
         checkFileType(file, cb);
     }
