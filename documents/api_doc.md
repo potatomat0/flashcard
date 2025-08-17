@@ -280,6 +280,38 @@ _(Rest of Card Management is the same)_
 ...
 ---
 
+### Get Single Card
+**Endpoint:** `GET /api/cards/{cardId}`
+**Authentication:** Required
+**Description:** Retrieves a single flashcard by its unique ID. The server will verify that the card belongs to a deck owned by the authenticated user.
+**Success Response (200 OK):**
+Returns the full card object.
+```json
+{
+    "_id": "68a181b6de06e4650baffc2e",
+    "deck_id": "68a18165de06e4650baffc2a",
+    "name": "New Card",
+    "definition": "The definition of the new card.",
+    "word_type": "noun",
+    "url": "/media/image-1678886400000.png",
+    "hint": "A hint for the new card.",
+    "example": [
+        "An example of how to use the new card.",
+        "Another example."
+    ],
+    "category": [
+        "new",
+        "card"
+    ],
+    "frequency": 3,
+    "createdAt": "2025-08-17T07:16:38.940Z",
+    "updatedAt": "2025-08-17T07:16:38.940Z"
+}
+```
+**Error Responses:**
+- **404 Not Found:** If a card with the specified ID does not exist.
+- **401 Unauthorized:** If the card belongs to a deck that the current user does not own.
+
 ...
 _(Rest of Review Sessions is the same)_
 ...

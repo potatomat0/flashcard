@@ -4,6 +4,8 @@ const cardController = require('../controllers/cardController');
 const auth = require('../middleware/authMiddleware');
 const asyncHandler = require('../utils/asyncHandler');
 
+router.get('/:id', auth, asyncHandler(cardController.getCardById));
+
 router.post('/:id/review', auth, asyncHandler(cardController.submitCardReview));
 
 router.patch('/:id', auth, asyncHandler(cardController.updateCard));
