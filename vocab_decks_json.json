@@ -1,0 +1,460 @@
+{
+  "decks": [
+    {
+      "_id": "VP",
+      "name": "từ vựng văn phòng",
+      "description": "list 20 từ vựng văn phòng phổ biến nhất",
+      "url": "https://images.pexels.com/photos/380768/pexels-photo-380768.jpeg",
+      "size": 20
+    },
+    {
+      "_id": "IT",
+      "name": "từ vựng công nghệ thông tin",
+      "description": "list 20 từ vựng CNTT phổ biến nhất",
+      "url": "https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg",
+      "size": 20
+    }
+  ],
+  "cards": [
+    {
+      "deck_id": "VP",
+      "name": "office",
+      "definition": "văn phòng",
+      "hint": "room where people work",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Did you go to the office last Friday?", "Our office is located downtown."],
+      "category": ["work", "places"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "VP",
+      "name": "employee",
+      "definition": "nhân viên",
+      "hint": "person who works for a company",
+      "word_type": "noun",
+      "url": "",
+      "example": ["She is a dedicated employee.", "The company has 500 employees."],
+      "category": ["work", "people"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "VP",
+      "name": "employer",
+      "definition": "chủ lao động, người tuyển dụng",
+      "hint": "person or company that hires workers",
+      "word_type": "noun",
+      "url": "",
+      "example": ["My employer offers good benefits.", "The employer is looking for new staff."],
+      "category": ["work", "people"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "VP",
+      "name": "interview",
+      "definition": "phỏng vấn",
+      "hint": "formal meeting to assess someone for a job",
+      "word_type": "noun/verb",
+      "url": "",
+      "example": ["I have an interview tomorrow.", "They will interview three candidates."],
+      "category": ["work", "recruitment"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "VP",
+      "name": "absent",
+      "definition": "vắng mặt",
+      "hint": "not present or attending",
+      "word_type": "adjective",
+      "url": "",
+      "example": ["He was absent from the meeting.", "Please mark her as absent today."],
+      "category": ["work", "attendance"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "VP",
+      "name": "copyright",
+      "definition": "bản quyền",
+      "hint": "legal right to control use of creative work",
+      "word_type": "noun",
+      "url": "",
+      "example": ["This document is protected by copyright.", "We need to respect copyright laws."],
+      "category": ["work", "legal"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "VP",
+      "name": "inflation",
+      "definition": "lạm phát",
+      "hint": "general increase in prices over time",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Inflation affects our budget planning.", "The inflation rate is 3% this year."],
+      "category": ["work", "economics"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "VP",
+      "name": "draft",
+      "definition": "bản nháp",
+      "hint": "preliminary version of a document",
+      "word_type": "noun/verb",
+      "url": "",
+      "example": ["Please review this draft report.", "I need to draft a proposal."],
+      "category": ["work", "documents"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "VP",
+      "name": "meeting",
+      "definition": "cuộc họp",
+      "hint": "gathering of people to discuss business",
+      "word_type": "noun",
+      "url": "",
+      "example": ["We have a meeting at 2 PM.", "The meeting was very productive."],
+      "category": ["work", "communication"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "VP",
+      "name": "executive",
+      "definition": "giám đốc điều hành",
+      "hint": "senior manager in a company",
+      "word_type": "noun/adjective",
+      "url": "",
+      "example": ["The executive made the final decision.", "She works in executive management."],
+      "category": ["work", "management"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "VP",
+      "name": "recruiter",
+      "definition": "nhà tuyển dụng",
+      "hint": "person who finds and hires new employees",
+      "word_type": "noun",
+      "url": "",
+      "example": ["The recruiter called me yesterday.", "Our recruiter specializes in IT positions."],
+      "category": ["work", "recruitment"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "VP",
+      "name": "mailbox",
+      "definition": "hộp thư",
+      "hint": "container for receiving mail or emails",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Check your mailbox for new messages.", "The mailbox is full of documents."],
+      "category": ["work", "communication"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "VP",
+      "name": "onboard",
+      "definition": "đào tạo nhân viên mới",
+      "hint": "process of integrating new employees",
+      "word_type": "verb",
+      "url": "",
+      "example": ["We need to onboard the new staff.", "The onboarding process takes one week."],
+      "category": ["work", "training"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "VP",
+      "name": "product",
+      "definition": "sản phẩm",
+      "hint": "item made or sold by a company",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Our new product launches next month.", "This product has great reviews."],
+      "category": ["work", "business"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "VP",
+      "name": "manager",
+      "definition": "quản lý",
+      "hint": "person who supervises other employees",
+      "word_type": "noun",
+      "url": "",
+      "example": ["My manager approved my vacation.", "She became a manager last year."],
+      "category": ["work", "management"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "VP",
+      "name": "pay slip",
+      "definition": "phiếu lương",
+      "hint": "document showing salary details",
+      "word_type": "noun",
+      "url": "",
+      "example": ["I need my pay slip for the bank.", "The pay slip shows all deductions."],
+      "category": ["work", "finance"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "VP",
+      "name": "skill",
+      "definition": "kỹ năng",
+      "hint": "ability to do something well",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Communication is an important skill.", "He has excellent technical skills."],
+      "category": ["work", "abilities"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "VP",
+      "name": "estimate",
+      "definition": "ước tính",
+      "hint": "approximate calculation or judgment",
+      "word_type": "noun/verb",
+      "url": "",
+      "example": ["Can you give me a cost estimate?", "I estimate it will take two hours."],
+      "category": ["work", "planning"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "VP",
+      "name": "contract",
+      "definition": "hợp đồng",
+      "hint": "legal agreement between parties",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Please sign the contract.", "The contract expires next year."],
+      "category": ["work", "legal"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "VP",
+      "name": "internship",
+      "definition": "thực tập",
+      "hint": "temporary work experience for students",
+      "word_type": "noun",
+      "url": "",
+      "example": ["She got an internship at Google.", "The internship lasts three months."],
+      "category": ["work", "education"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "IT",
+      "name": "software",
+      "definition": "phần mềm",
+      "hint": "computer programs and applications",
+      "word_type": "noun",
+      "url": "",
+      "example": ["We need to update the software.", "This software is very user-friendly."],
+      "category": ["technology", "programming"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "IT",
+      "name": "hardware",
+      "definition": "phần cứng",
+      "hint": "physical components of a computer",
+      "word_type": "noun",
+      "url": "",
+      "example": ["The hardware needs to be replaced.", "Our hardware is getting outdated."],
+      "category": ["technology", "components"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "IT",
+      "name": "database",
+      "definition": "cơ sở dữ liệu",
+      "hint": "organized collection of data",
+      "word_type": "noun",
+      "url": "",
+      "example": ["The database stores customer information.", "We need to backup the database."],
+      "category": ["technology", "data"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "IT",
+      "name": "network",
+      "definition": "mạng",
+      "hint": "connected system of computers",
+      "word_type": "noun",
+      "url": "",
+      "example": ["The network is running slowly.", "Configure the network settings."],
+      "category": ["technology", "connectivity"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "IT",
+      "name": "server",
+      "definition": "máy chủ",
+      "hint": "computer that provides services to other computers",
+      "word_type": "noun",
+      "url": "",
+      "example": ["The server is down for maintenance.", "We host our website on this server."],
+      "category": ["technology", "infrastructure"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "IT",
+      "name": "algorithm",
+      "definition": "thuật toán",
+      "hint": "step-by-step procedure for calculations",
+      "word_type": "noun",
+      "url": "",
+      "example": ["This algorithm sorts data efficiently.", "The search algorithm is very fast."],
+      "category": ["technology", "programming"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "IT",
+      "name": "cloud",
+      "definition": "điện toán đám mây",
+      "hint": "computing services delivered over the internet",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Our data is stored in the cloud.", "Cloud computing reduces costs."],
+      "category": ["technology", "services"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "IT",
+      "name": "cybersecurity",
+      "definition": "an ninh mạng",
+      "hint": "protection of computer systems from threats",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Cybersecurity is crucial for businesses.", "We invest heavily in cybersecurity."],
+      "category": ["technology", "security"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "IT",
+      "name": "artificial intelligence",
+      "definition": "trí tuệ nhân tạo",
+      "hint": "simulation of human intelligence in machines",
+      "word_type": "noun",
+      "url": "",
+      "example": ["AI is transforming many industries.", "This app uses artificial intelligence."],
+      "category": ["technology", "AI"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "IT",
+      "name": "programming",
+      "definition": "lập trình",
+      "hint": "process of creating computer software",
+      "word_type": "noun/verb",
+      "url": "",
+      "example": ["I'm learning programming.", "Programming requires logical thinking."],
+      "category": ["technology", "development"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "IT",
+      "name": "bug",
+      "definition": "lỗi phần mềm",
+      "hint": "error or flaw in computer software",
+      "word_type": "noun",
+      "url": "",
+      "example": ["We found a bug in the code.", "This bug causes the app to crash."],
+      "category": ["technology", "problems"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "IT",
+      "name": "backup",
+      "definition": "sao lưu dữ liệu",
+      "hint": "copy of data for protection against loss",
+      "word_type": "noun/verb",
+      "url": "",
+      "example": ["Always backup your important files.", "The backup process runs automatically."],
+      "category": ["technology", "data management"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "IT",
+      "name": "update",
+      "definition": "cập nhật",
+      "hint": "newer version of software or data",
+      "word_type": "noun/verb",
+      "url": "",
+      "example": ["Please install the latest update.", "We need to update the system."],
+      "category": ["technology", "maintenance"],
+      "frequency": 5
+    },
+    {
+      "deck_id": "IT",
+      "name": "firewall",
+      "definition": "tường lửa",
+      "hint": "security system that monitors network traffic",
+      "word_type": "noun",
+      "url": "",
+      "example": ["The firewall blocked suspicious traffic.", "Configure the firewall settings."],
+      "category": ["technology", "security"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "IT",
+      "name": "interface",
+      "definition": "giao diện",
+      "hint": "point where user interacts with computer",
+      "word_type": "noun",
+      "url": "",
+      "example": ["The user interface is very intuitive.", "This API provides a clean interface."],
+      "category": ["technology", "design"],
+      "frequency": 4
+    },
+    {
+      "deck_id": "IT",
+      "name": "encryption",
+      "definition": "mã hóa",
+      "hint": "process of encoding information for security",
+      "word_type": "noun",
+      "url": "",
+      "example": ["All data is protected by encryption.", "Use strong encryption for passwords."],
+      "category": ["technology", "security"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "IT",
+      "name": "bandwidth",
+      "definition": "băng thông",
+      "hint": "maximum data transfer rate of a network",
+      "word_type": "noun",
+      "url": "",
+      "example": ["We need more bandwidth for video calls.", "High bandwidth improves performance."],
+      "category": ["technology", "network"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "IT",
+      "name": "debugging",
+      "definition": "gỡ lỗi",
+      "hint": "process of finding and fixing software errors",
+      "word_type": "noun/verb",
+      "url": "",
+      "example": ["Debugging took most of the day.", "Use debugging tools to find the issue."],
+      "category": ["technology", "development"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "IT",
+      "name": "repository",
+      "definition": "kho lưu trữ",
+      "hint": "storage location for software code",
+      "word_type": "noun",
+      "url": "",
+      "example": ["Upload your code to the repository.", "The Git repository contains all versions."],
+      "category": ["technology", "development"],
+      "frequency": 3
+    },
+    {
+      "deck_id": "IT",
+      "name": "deployment",
+      "definition": "triển khai",
+      "hint": "process of making software available for use",
+      "word_type": "noun",
+      "url": "",
+      "example": ["The deployment went smoothly.", "Schedule the deployment for tonight."],
+      "category": ["technology", "operations"],
+      "frequency": 3
+    }
+  ]
+}

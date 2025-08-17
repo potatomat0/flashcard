@@ -26,6 +26,17 @@ All endpoints in this section (except register and login) require authentication
 ### Register a New User
 **Endpoint:** `POST /api/users/register`
 **Description:** Creates a new user account. The username and email must be unique. Upon successful registration, a new empty deck named `"{username}'s first deck"` is automatically created for the user.
+**Success Response (201 Created):**
+```json
+{
+    "user": {
+        "id": "6896f365d8a0bbd5773a618a",
+        "username": "testuser",
+        "name": "Test User"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OTZmMzY1ZDhhMGJiZDU3NzNhNjE4YSIsIm5hbWUiOiJ0ZXN0dXNlciIsImlhdCI6MTc1NTQxNDU5OSwiZXhwIjoxNzU1NTAwOTk5fQ.gVTFGgc6dRtxg1PisWmXQYYZ3HBCXunFaTDyRzfgU8I"
+}
+```
 ...
 _(Rest of User Management is the same)_
 ...
@@ -40,10 +51,50 @@ These endpoints provide access to universal, pre-loaded decks and do **not** req
 **Query Parameters:**
 - `page` (optional): The page number to retrieve. Defaults to `1`.
 - `limit` (optional): The number of decks per page. Defaults to `10`.
+**Success Response (200 OK):**
+```json
+{
+    "totalPages": 1,
+    "currentPage": 1,
+    "totalDecks": 2,
+    "decks": [
+        {
+            "_id": "68a17f24de06e4650baffbfa",
+            "name": "từ vựng văn phòng",
+            "description": "list 20 từ vựng văn phòng phổ biến nhất",
+            "url": "https://images.pexels.com/photos/380768/pexels-photo-380768.jpeg",
+            "size": 20,
+            "createdAt": "2025-08-17T07:05:08.783Z",
+            "updatedAt": "2025-08-17T07:05:08.783Z"
+        },
+        {
+            "_id": "68a17f24de06e4650baffbfc",
+            "name": "từ vựng công nghệ thông tin",
+            "description": "list 20 từ vựng CNTT phổ biến nhất",
+            "url": "https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg",
+            "size": 20,
+            "createdAt": "2025-08-17T07:05:08.860Z",
+            "updatedAt": "2025-08-17T07:05:08.860Z"
+        }
+    ]
+}
+```
 
 ### Get Single Default Deck
 **Endpoint:** `GET /api/default-decks/{deckId}`
 **Description:** Retrieves a specific default deck by its ID.
+**Success Response (200 OK):**
+```json
+{
+    "_id": "68a17f24de06e4650baffbfa",
+    "name": "từ vựng văn phòng",
+    "description": "list 20 từ vựng văn phòng phổ biến nhất",
+    "url": "https://images.pexels.com/photos/380768/pexels-photo-380768.jpeg",
+    "size": 20,
+    "createdAt": "2025-08-17T07:05:08.783Z",
+    "updatedAt": "2025-08-17T07:05:08.783Z"
+}
+```
 
 ### Get All Cards in Default Deck
 **Endpoint:** `GET /api/default-decks/{deckId}/cards`
@@ -51,6 +102,56 @@ These endpoints provide access to universal, pre-loaded decks and do **not** req
 **Query Parameters:**
 - `page` (optional): The page number to retrieve. Defaults to `1`.
 - `limit` (optional): The number of cards per page. Defaults to `10`.
+**Success Response (200 OK):**
+```json
+{
+    "totalPages": 10,
+    "currentPage": 1,
+    "totalCards": 20,
+    "cards": [
+        {
+            "_id": "68a17f24de06e4650baffbfe",
+            "deck_id": "68a17f24de06e4650baffbfa",
+            "name": "office",
+            "definition": "văn phòng",
+            "word_type": "noun",
+            "url": "",
+            "hint": "room where people work",
+            "example": [
+                "Did you go to the office last Friday?",
+                "Our office is located downtown."
+            ],
+            "category": [
+                "work",
+                "places"
+            ],
+            "frequency": 3,
+            "createdAt": "2025-08-17T07:05:08.933Z",
+            "updatedAt": "2025-08-17T07:05:08.933Z"
+        },
+        {
+            "_id": "68a17f25de06e4650baffc00",
+            "deck_id": "68a17f24de06e4650baffbfa",
+            "name": "employee",
+            "definition": "nhân viên",
+            "word_type": "noun",
+            "url": "",
+            "hint": "person who works for a company",
+            "example": [
+                "She is a dedicated employee.",
+                "The company has 500 employees."
+            ],
+            "category": [
+                "work",
+                "people"
+            ],
+            "frequency": 5,
+            "createdAt": "2025-08-17T07:05:09.006Z",
+            "updatedAt": "2025-08-17T07:05:09.006Z"
+        }
+    ]
+}
+```
 
 ---
 
@@ -66,6 +167,19 @@ All endpoints in this section require authentication.
   "name": "My New Deck",
   "description": "A description for my new deck.",
   "url": "https://example.com/background.jpg"
+}
+```
+**Success Response (201 Created):**
+```json
+{
+    "name": "My New Deck",
+    "description": "A description for my new deck.",
+    "url": "https://example.com/background.jpg",
+    "user_id": "6896f365d8a0bbd5773a618a",
+    "size": 0,
+    "_id": "68a18165de06e4650baffc2a",
+    "createdAt": "2025-08-17T07:15:17.137Z",
+    "updatedAt": "2025-08-17T07:15:17.137Z"
 }
 ```
 ...
@@ -91,6 +205,29 @@ All endpoints in this section require authentication.
   "category": ["new", "card"]
 }
 ```
+**Success Response (201 Created):**
+```json
+{
+    "deck_id": "68a18165de06e4650baffc2a",
+    "name": "New Card",
+    "definition": "The definition of the new card.",
+    "word_type": "noun",
+    "url": "/media/image-1678886400000.png",
+    "hint": "A hint for the new card.",
+    "example": [
+        "An example of how to use the new card.",
+        "Another example."
+    ],
+    "category": [
+        "new",
+        "card"
+    ],
+    "frequency": 3,
+    "_id": "68a181b6de06e4650baffc2e",
+    "createdAt": "2025-08-17T07:16:38.940Z",
+    "updatedAt": "2025-08-17T07:16:38.940Z"
+}
+```
 
 ### Add Default Card to Personal Deck
 **Endpoint:** `POST /api/decks/{deckId}/cards/from-default`
@@ -102,7 +239,29 @@ All endpoints in this section require authentication.
   "defaultCardId": "64a859c2f1b4c3d2e1f2a3b5"
 }
 ```
-**Success Response (201 Created):** Returns the newly created card object in the user's deck.
+**Success Response (201 Created):**
+```json
+{
+    "deck_id": "68a18165de06e4650baffc2a",
+    "name": "office",
+    "definition": "văn phòng",
+    "word_type": "noun",
+    "url": "",
+    "hint": "room where people work",
+    "example": [
+        "Did you go to the office last Friday?",
+        "Our office is located downtown."
+    ],
+    "category": [
+        "work",
+        "places"
+    ],
+    "frequency": 3,
+    "_id": "68a1821dde06e4650baffc32",
+    "createdAt": "2025-08-17T07:18:21.455Z",
+    "updatedAt": "2025-08-17T07:18:21.455Z"
+}
+```
 
 ### Get All Cards in Deck
 ...

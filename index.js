@@ -42,6 +42,9 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from the 'media' directory
+app.use('/media', express.static(path.join(__dirname, 'media')));
+
 // Routes
 const userRoutes = require('./routes/users');
 const deckRoutes = require('./routes/decks');

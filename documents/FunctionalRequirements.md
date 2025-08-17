@@ -50,7 +50,7 @@ This section describes the technical implementation details of the backend syste
 
 #### 2.2.1. `users` Collection
 -   Stores registered user information.
--   **Fields:** `_id`, `username` (unique), `name`, `email` (unique), `passwordHash`, `createdAt`.
+-   **Fields:** `username` (unique), `name`, `email` (unique), `passwordHash`, `emailConfirmed` (Boolean), `createdAt`, `updatedAt`.
 
 #### 2.2.2. `decks` Collection
 -   Stores user-created, personal decks.
@@ -62,7 +62,7 @@ This section describes the technical implementation details of the backend syste
 
 #### 2.2.4. `defaultdecks` Collection
 -   Stores the universal, pre-loaded decks. Populated by an administrator.
--   **Fields:** `_id`, `name`, `description`, `url`, `size`, `createdAt`, `updatedAt`.
+-   **Fields:** `name`, `description`, `url`, `size`, `createdAt`, `updatedAt`.
 
 #### 2.2.5. `defaultcards` Collection
 -   Stores the cards for the default decks.

@@ -93,6 +93,25 @@ sequenceDiagram
     Note over User: User continues with the next card in the session...
 ```
 
+## Sequence Diagram for Creating a Card with an Image
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend as Client App
+    participant API as FlashcardApp API
+    participant MediaStorage as ./media Directory
+
+    User->>Frontend: Chooses an image to upload
+    Frontend->>API: POST /api/upload (sends image file)
+    API->>MediaStorage: Saves file with a unique name
+    MediaStorage-->>API: File saved successfully
+    API-->>Frontend: 200 OK (returns JSON with file path, e.g., { "filePath": "/media/image-123.png" })
+
+    User->>Frontend: Fills in card details (name, definition, etc.)
+    Frontend->>API: POST /api/decks/{deckId}/cards (sends card data including the new image URL)
+    API-->>Frontend: 201 Created (returns the full new card object)
+```
+
 ## Flowchart for Review Session Generation
 This flowchart shows how the backend generates a custom review session based on user-specified methods and sizes.
 
