@@ -24,6 +24,15 @@ exports.register = async (req, res) => {
         });
 
         const savedUser = await newUser.save();
+
+        // Create a default deck for the new user
+        const defaultDeck = new Deck({
+            name: `${savedUser.username}'s first deck`,
+            description: 'A place to save new cards you discover.',
+            user_id: savedUser._id
+        });
+        await defaultDeck.save();
+
         res.status(201).json({
             _id: savedUser._id,
             username: savedUser.username,

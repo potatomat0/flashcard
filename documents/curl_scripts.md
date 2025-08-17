@@ -54,18 +54,41 @@ curl -X DELETE http://localhost:5001/api/users/profile \
 
 ---
 
-## Deck Management
+## Default Deck Management (Public)
+
+### Get All Default Decks (Paginated)
+```bash
+# No authentication required
+curl -X GET "http://localhost:5001/api/default-decks?page=1&limit=5"
+```
+
+### Get Single Default Deck
+```bash
+# No authentication required, replace <deckId> with an actual ID
+curl -X GET http://localhost:5001/api/default-decks/<deckId>
+```
+
+### Get Cards in Default Deck (Paginated)
+```bash
+# No authentication required, replace <deckId> with an actual ID
+curl -X GET "http://localhost:5001/api/default-decks/<deckId>/cards?page=1&limit=10"
+```
+
+---
+
+## Personal Deck Management
 
 ### Create a New Deck
 ```bash
-# Replace <your_jwt_token> with the actual token from the login response
+# Replace <your_jwt_token>
 curl -X POST http://localhost:5001/api/decks \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <your_jwt_token>" \
 -d 
 {
   "name": "My First Deck",
-  "description": "A deck for learning cURL commands"
+  "description": "A deck for learning cURL commands",
+  "url": "https://example.com/image.jpg"
 }
 ```
 
@@ -112,7 +135,7 @@ curl -X DELETE http://localhost:5001/api/decks/<deckId> \
 
 ---
 
-## Card Management
+## Personal Card Management
 
 ### Add Card to Deck
 ```bash
@@ -124,7 +147,20 @@ curl -X POST http://localhost:5001/api/decks/<deckId>/cards \
 {
   "name": "cURL",
   "definition": "A command-line tool for transferring data with URL syntax.",
-  "hint": "It is used to test APIs."
+  "hint": "It is used to test APIs.",
+  "example": ["curl -X GET https://api.example.com/users"]
+}
+```
+
+### Add Default Card to Personal Deck
+```bash
+# Replace <your_jwt_token>, <deckId>, and <defaultCardId>
+curl -X POST http://localhost:5001/api/decks/<deckId>/cards/from-default \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <your_jwt_token>" \
+-d 
+{
+  "defaultCardId": "<defaultCardId>"
 }
 ```
 
@@ -167,15 +203,26 @@ curl -X DELETE http://localhost:5001/api/cards/<cardId> \
 
 ## Review Sessions
 
-### Create Review Session
+### Create Review Session for Personal Deck
 ```bash
-# Replace <your_jwt_token> and <deckId> with actual values
+# Replace <your_jwt_token> and <deckId>
 curl -X POST http://localhost:5001/api/decks/<deckId>/review-session \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <your_jwt_token>" \
 -d 
 {
-  "reviewSize": 10
+  "flashcard": 10
+}
+```
+
+### Create Review Session for Default Deck
+```bash
+# No authentication required, replace <deckId>
+curl -X POST http://localhost:5001/api/default-decks/<deckId>/review-session \
+-H "Content-Type: application/json" \
+-d 
+{
+  "flashcard": 10
 }
 ```
 

@@ -1,4 +1,5 @@
 const Card = require('../models/Card');
+const DefaultCard = require('../models/DefaultCard');
 const Deck = require('../models/Deck');
 
 // @desc    Thêm một hoặc nhiều card vào deck
@@ -27,6 +28,7 @@ exports.addCardToDeck = async (req, res) => {
             deck_id: deckId,
             name: card.name,
             definition: card.definition,
+            word_type: card.word_type,
             hint: card.hint,
             example: card.example,
             category: card.category
@@ -73,6 +75,7 @@ exports.getCardsInDeck = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 // @desc  submit card để update tần số xuất hiện 
 // @route   POST /api/cards/:id/review
 // @access  Private
@@ -147,6 +150,54 @@ exports.deleteCard = async (req, res) => {
         await card.deleteOne();
         await Deck.findByIdAndUpdate(card.deck_id, { $inc: { size: -1 } });
         res.json({ message: 'Card removed successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Add a card from a default deck to a user's deck
+// @route   POST /api/decks/:deckId/cards/from-default
+// @access  Private
+exports.addDefaultCardToDeck = async (req, res) => {
+    try {
+        const { deckId } = req.params;
+        const { defaultCardId } = req.body;
+
+        if (!defaultCardId) {
+            return res.status(400).json({ message: 'defaultCardId is required.' });
+        }
+
+        // 1. Find the user's deck and verify ownership
+        const deck = await Deck.findById(deckId);
+        if (!deck || deck.user_id.toString() !== req.user.id) {
+            return res.status(404).json({ message: 'Deck not found or user not authorized' });
+        }
+
+        // 2. Find the default card to copy
+        const defaultCard = await DefaultCard.findById(defaultCardId);
+        if (!defaultCard) {
+            return res.status(404).json({ message: 'Default card not found' });
+        }
+
+        // 3. Create a new card by copying the default card's data
+        const newCard = new Card({
+            deck_id: deckId,
+            name: defaultCard.name,
+            definition: defaultCard.definition,
+            word_type: defaultCard.word_type,
+            hint: defaultCard.hint,
+            example: defaultCard.example,
+            category: defaultCard.category,
+            // frequency is left to its default value
+        });
+
+        // 4. Save the new card
+        const savedCard = await newCard.save();
+
+        // 5. Atomically update the deck's size
+        await Deck.findByIdAndUpdate(deckId, { $inc: { size: 1 } });
+
+        res.status(201).json(savedCard);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

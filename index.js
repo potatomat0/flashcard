@@ -45,11 +45,13 @@ app.use(express.json());
 // Routes
 const userRoutes = require('./routes/users');
 const deckRoutes = require('./routes/decks');
+const defaultDeckRoutes = require('./routes/defaultDecks');
 const nestedCardRoutes = require('./routes/cards'); const cardActionRoutes = require('./routes/cardActions'); 
 
 // ... app setup và middleware
 app.use('/api/users', userRoutes);
 app.use('/api/decks', deckRoutes);
+app.use('/api/default-decks', defaultDeckRoutes);
 app.use('/api/decks/:deckId/cards', nestedCardRoutes);
 app.use('/api/cards', cardActionRoutes);  
 
