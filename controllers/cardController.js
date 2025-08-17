@@ -72,9 +72,6 @@ exports.getCardsInDeck = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-        res.status(500).json({ message: error.message });
-    }
-};
 // @desc  submit card để update tần số xuất hiện 
 // @route   POST /api/cards/:id/review
 // @access  Private
