@@ -187,10 +187,76 @@ _(Rest of Deck Management is the same)_
 ...
 ---
 
+...
+_(Rest of Deck Management is the same)_
+...
+---
+
+### Clone a Default Deck
+**Endpoint:** `POST /api/decks/clone/{defaultDeckId}`
+**Authentication:** Required
+**Description:** Creates a new personal deck for the logged-in user by cloning a public default deck. This process also copies all cards from the default deck into the new personal deck.
+**Success Response (201 Created):**
+Returns the newly created personal deck object.
+```json
+{
+    "_id": "68a18165de06e4650baffc2a",
+    "user_id": "6896f365d8a0bbd5773a618a",
+    "name": "từ vựng văn phòng",
+    "description": "list 20 từ vựng văn phòng phổ biến nhất",
+    "url": "https://images.pexels.com/photos/380768/pexels-photo-380768.jpeg",
+    "size": 20,
+    "createdAt": "2025-08-17T08:00:00.000Z",
+    "updatedAt": "2025-08-17T08:00:00.000Z"
+}
+```
+**Error Responses:**
+- **404 Not Found:** If the specified `defaultDeckId` does not exist.
+
 ## Personal Card Management (Private)
 All endpoints in this section require authentication.
 
+### Search Personal Cards
+**Endpoint:** `GET /api/cards/search`
+**Authentication:** Required
+**Description:** Searches for cards across all of the user's personal decks. The search is case-insensitive and can be performed on the card's name, definition, or both.
+**Query Parameters:**
+- `name` (optional): A search term to match against the card's `name` field.
+- `definition` (optional): A search term to match against the card's `definition` field.
+- `page` (optional): The page number for pagination. Defaults to `1`.
+- `limit` (optional): The number of results per page. Defaults to `10`.
+**Example Request:** `GET /api/cards/search?name=office&page=1&limit=5`
+**Success Response (200 OK):**
+Returns a paginated list of card objects that match the search criteria.
+```json
+{
+    "totalPages": 1,
+    "currentPage": 1,
+    "totalCards": 2,
+    "cards": [
+        {
+            "_id": "68a181b6de06e4650baffc2e",
+            "deck_id": "68a18165de06e4650baffc2a",
+            "name": "office",
+            "definition": "A place of business.",
+            "..."
+        },
+        {
+            "_id": "68a181b6de06e4650baffc2f",
+            "deck_id": "68a18165de06e4650baffc2a",
+            "name": "back-office",
+            "definition": "The internal operations of a business.",
+            "..."
+        }
+    ]
+}
+```
+
 ### Add Card to Deck
+...
+_(Rest of Card Management is the same)_
+...
+---
 **Endpoint:** `POST /api/decks/{deckId}/cards`
 **Description:** Adds one or more new flashcards to a specific personal deck. The request body can be a single card object or an array of card objects.
 **Request Body:**

@@ -89,6 +89,60 @@ exports.getCardById = asyncHandler(async (req, res) => {
     res.json(card);
 });
 
+// @desc    Search for cards across all of a user's decks
+// @route   GET /api/cards/search
+// @access  Private
+exports.searchUserCards = asyncHandler(async (req, res) => {
+    const { name, definition, page = 1, limit = 10 } = req.query;
+    const userId = req.user.id;
+
+    // 1. Find all decks belonging to the user to get their IDs
+    const userDecks = await Deck.find({ user_id: userId }).select('_id');
+    const userDeckIds = userDecks.map(deck => deck._id);
+
+    if (userDeckIds.length === 0) {
+        return res.json({
+            totalPages: 0,
+            currentPage: 1,
+            totalCards: 0,
+            cards: []
+        });
+    }
+
+    // 2. Build the search query
+    const query = {
+        deck_id: { $in: userDeckIds }
+    };
+
+    const searchConditions = [];
+    if (name) {
+        searchConditions.push({ name: { $regex: name, $options: 'i' } });
+    }
+    if (definition) {
+        searchConditions.push({ definition: { $regex: definition, $options: 'i' } });
+    }
+
+    if (searchConditions.length > 0) {
+        query.$or = searchConditions;
+    }
+
+    // 3. Execute the search with pagination
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+
+    const totalCards = await Card.countDocuments(query);
+    const cards = await Card.find(query).skip(skip).limit(limitNum);
+
+    res.json({
+        totalPages: Math.ceil(totalCards / limitNum),
+        currentPage: pageNum,
+        totalCards,
+        cards
+    });
+});
+
+
 // @desc  submit card để update tần số xuất hiện 
 // @route   POST /api/cards/:id/review
 // @access  Private

@@ -54,12 +54,52 @@ classDiagram
         +updateCard(cardId, data)
         +deleteCard(cardId)
         +submitCardReview(cardId, result)
+
+        class DefaultDeck {
+                +ObjectId _id
+                +String name
+                +Sting URL 
+                +String description
+                +Number size
+                +Date createdAt
+                +Date updatedAt
+                --
+                +createDeck(name, description)
+                +getDecks()
+                +getDeckById(deckId)
+                +updateDeck(deckId, data)
+                +deleteDeck(deckId)
+                +createReviewSession(deckId, settings)
+        }
+
+        class DefaultCard {
+            +ObjectId _id
+                +ObjectId deck_id
+                +String name
+                +String definition
+                +String word_type
+                +String url
+                +String hint
+                +String[] example
+                +String[] category
+                +Number frequency
+                +Date createdAt
+                +Date updatedAt
+                --
+                +addCardToDeck(deckId, cardData)
+                +getCardsInDeck(deckId)
+                +updateCard(cardId, data)
+                +deleteCard(cardId)
+                +submitCardReview(cardId, result)
+        }
+
+
     }
 
     User "1" -- "0..*" Deck : owns
     Deck "1" -- "0..*" Card : contains
+    DefaultDeck "1" -- "0..*" DefaultCard : contains
 ```
-
 ## System Sequence Diagram
 ```mermaid
 sequenceDiagram
