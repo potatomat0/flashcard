@@ -54,6 +54,36 @@ exports.getDeckById = asyncHandler(async (req, res) => {
     res.json(deck);
 });
 
+// @desc    Get all distinct categories for a deck
+// @route   GET /api/decks/:id/categories
+// @access  Private
+exports.getDeckCategories = asyncHandler(async (req, res) => {
+    const { id: deckId } = req.params;
+
+    // 1. Verify deck ownership
+    const deck = await Deck.findById(deckId);
+    if (!deck || deck.user_id.toString() !== req.user.id) {
+        return res.status(404).json({ message: 'Deck not found or user not authorized' });
+    }
+
+    // 2. Aggregation pipeline to get categories and their cards
+    const categories = await Card.aggregate([
+        { $match: { deck_id: deck._id } },
+        { $unwind: '$category' },
+        { 
+            $group: { 
+                _id: '$category', 
+                cards: { $push: '$$ROOT' } 
+            } 
+        },
+        { $project: { _id: 0, category: '$_id', cards: 1 } },
+        { $sort: { category: 1 } } // Optional: sort categories alphabetically
+    ]);
+
+    res.json(categories);
+});
+
+
 // @desc    Update một bộ bài 
 // @route   PATCH /api/decks/:id
 // @access  Private

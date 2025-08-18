@@ -13,6 +13,7 @@ router.post('/clone/:defaultDeckId', auth, asyncHandler(deckController.cloneDefa
 router.post('/:deckId/cards/from-default', auth, asyncHandler(cardController.addDefaultCardToDeck));
 
 router.get('/:id', auth, asyncHandler(deckController.getDeckById));
+router.get('/:id/categories', auth, asyncHandler(deckController.getDeckCategories));
 router.patch('/:id', auth, asyncHandler(deckController.updateDeck));
 router.delete('/:id', auth, asyncHandler(deckController.deleteDeck));
 
