@@ -55,11 +55,11 @@ console.log("Auth Token saved toenvironment variable 'authToken'.");
 
 #### Register 
 
-Chức năng: Đăng ký tài khoản người dùng 
-Phương thức: POST 
-Endpoint: {{baseurl}}/api/users/register
-Header: content-type = application/json
-Authorization: Chưa cần đến
+- Chức năng: Đăng ký tài khoản người dùng 
+- Phương thức: POST 
+- Endpoint: {{baseurl}}/api/users/register
+- Header: content-type = application/json
+- Authorization: Chưa cần đến
 Ràng buộc: 
 - Username ít nhất phải có 3 ký tự 
 - Name không được bỏ trống 
@@ -88,12 +88,12 @@ Response:
 
 #### Login 
 
-Chức năng: Đăng nhập tài khoản người dùng 
-Phương thức: POST 
-Endpoint: {{baseurl}}/api/users/login
-Authorization: Chưa cần 
-Header: content-type = application/json
-Body: 
+- Chức năng: Đăng nhập tài khoản người dùng 
+- Phương thức: POST 
+- Endpoint: {{baseurl}}/api/users/login
+- Authorization: Chưa cần 
+- Header: content-type = application/json
+- Body: 
 ```json
 {
 "email": "testuser123@example.com",
@@ -121,12 +121,12 @@ Response:
 
 #### Update User 
 
-Chức năng: cập nhật thông tin người dùng 
-Phương thức: PATCH
-Endpoint: {{baseurl}}/api/users/profile
-Header: content-type = application/json
-Authorization: {{authToken}}
-Body: 
+- Chức năng: cập nhật thông tin người dùng 
+- Phương thức: PATCH
+- Endpoint: {{baseurl}}/api/users/profile
+- Header: content-type = application/json
+- Authorization: {{authToken}}
+- Body: 
 ```json
 {
 	"name": "Nguyen Van A",
@@ -150,15 +150,15 @@ Response:
 	"email":"24550031@gm.uit.edu.vn"
 }
 ```
-#### Delete user 
+- #### Delete user 
 
-Chức năng: Xóa người dùng 
-Phương thức: DELETE
-Endpoint: {{baseurl}}/api/users/profile
-Body: không cần body. 
-Authorization: {{authToken}}
-Header: Mặc định
-Response:
+- Chức năng: Xóa người dùng 
+- Phương thức: DELETE
+- Endpoint: {{baseurl}}/api/users/profile
+- Body: không cần body. 
+- Authorization: {{authToken}}
+- Header: Mặc định
+- Response:
 ```json
 {
 	"message": "User accoutn and all associated data deleted successfully"
@@ -168,19 +168,19 @@ Response:
 
 #### Create deck 
 
-Chức năng: Tạo một bộ bài cho người dùng 
-Phương thức: POST
-Endpoint: {{baseurl}}/api/decks/
-Header: content-type = application/json
-Body: 
+- Chức năng: Tạo một bộ bài cho người dùng 
+- Phương thức: POST
+- Endpoint: {{baseurl}}/api/decks/
+- Header: content-type = application/json
+- Body: 
 ```json
 {
 	"name": "English for the academia",
 	"description": "advanced eglish for researchers and university students"	
 }
 ```
-Authorization: {{authToken}}
-response: 
+- Authorization: {{authToken}}
+- response: 
 
 ```json
 {
@@ -197,16 +197,16 @@ response:
 ```
 ### Get all decks 
 
-Chức năng: Lấy danh sách tất cả các bộ bài của người dùng
-Phương thức: GET 
-Endpoint: {{baseurl}}/api/decks/
-Header: content-type = application/json
-Body: Không cần body 
-Authorization: {{authToken}}
-Param: 
-- page: số trang muốn được hiển thị 
-- limit: số deck tối đa muốn hiển thị ở mỗi trang 
-response: 
+- Chức năng: Lấy danh sách tất cả các bộ bài của người dùng
+- Phương thức: GET 
+- Endpoint: {{baseurl}}/api/decks/
+- Header: content-type = application/json
+- Body: Không cần body 
+- Authorization: {{authToken}}
+- Param: 
+    - page: số trang muốn được hiển thị 
+    - limit: số deck tối đa muốn hiển thị ở mỗi trang 
+- - response: 
 
 ```json
 {
@@ -238,13 +238,13 @@ response:
 
 ### Get single deck 
 
-Chức năng: Lấy cụ thể một bộ bài của người dùng
-Phương thức: GET 
-Endpoint: {{baseurl}}/api/decks/{deckId}
-Header: content-type = application/json
-Body: Không cần body 
-Authorization: {{authToken}}
-response: 
+- Chức năng: Lấy cụ thể một bộ bài của người dùng
+- Phương thức: GET 
+- Endpoint: {{baseurl}}/api/decks/{deckId}
+- Header: content-type = application/json
+- Body: Không cần body 
+- Authorization: {{authToken}}
+- response: 
 ```json
 {
     "_id": "68a17f24de06e4650baffbfa",
@@ -259,18 +259,18 @@ response:
 
 ### Update a deck 
 
-Chức năng: Cập nhật tên và miêu tả của bộ bài
-Phương thức: GET 
-Endpoint: {{baseurl}}/api/decks/{deckId}
-Header: content-type = application/json
-Body: một trong hai hoặc cả hai trường 
+- Chức năng: Cập nhật tên và miêu tả của bộ bài
+- Phương thức: GET 
+- Endpoint: {{baseurl}}/api/decks/{deckId}
+- Header: content-type = application/json
+- Body: một trong hai hoặc cả hai trường 
 ```json
 {
 	"description": "information technology termilogies and computer science concepts"
 }
 ```
-Authorization: {{authToken}}
-response: 
+- Authorization: {{authToken}}
+- response: 
 
 ```json
 {
@@ -288,13 +288,13 @@ response:
 
 ### Delete deck 
 
-Chức năng: Cập nhật tên và miêu tả của bộ bài
-Phương thức: DELETE
-Endpoint: {{baseurl}}/api/decks/{deckId}
-Header: mặc định
-Body: không cần
-Authorization: {{authToken}}
-response: 
+- Chức năng: Cập nhật tên và miêu tả của bộ bài
+- Phương thức: DELETE
+- Endpoint: {{baseurl}}/api/decks/{deckId}
+- Header: mặc định
+- Body: không cần
+- Authorization: {{authToken}}
+- response: 
 
 ```json
 {
@@ -303,11 +303,11 @@ response:
 ```
 ### Add card to deck 
 
-Chức năng: Thêm một lá bài vào một bộ bài cụ thể
-Phương thức: DELETE
-Endpoint: {{baseurl}}/api/decks/{{deckID}}/cards
-Header: content-type = application/json
-Body: 
+- Chức năng: Thêm một lá bài vào một bộ bài cụ thể
+- Phương thức: DELETE
+- Endpoint: {{baseurl}}/api/decks/{{deckID}}/cards
+- Header: content-type = application/json
+- Body: 
 ```json
 {
 "name": "Silly",
@@ -324,15 +324,15 @@ response:
 
 #### Get all cards in deck
 
-Chức năng: GET tất cả các lá bài từ một bộ bài cụ thể
-Phương thức: GET
-Endpoint: {{baseurl}}/api/decks/{{deckID}}/cards
-Header: mặc định
-Body: không cần
-Authorization: {{authToken}}
-Param: 
-- page: số trang muốn được hiển thị 
-- limit: số thẻ tối đa mỗi trang 
+- Chức năng: GET tất cả các lá bài từ một bộ bài cụ thể
+- Phương thức: GET
+- Endpoint: {{baseurl}}/api/decks/{{deckID}}/cards
+- Header: mặc định
+- Body: không cần
+- Authorization: {{authToken}}
+- Param: 
+    - page: số trang muốn được hiển thị 
+    - limit: số thẻ tối đa mỗi trang 
 response: 
 ```json
 {
@@ -368,13 +368,13 @@ response:
 
 #### Get single card 
 
-Chức năng: GET một lá bài cụ thể 
-Phương thức: GET
-Endpoint: {{baseurl}}/api/cards/:id
-Header: mặc định
-Body: không cần
-Authorization: {{authToken}}
-response: 
+- Chức năng: GET một lá bài cụ thể 
+- Phương thức: GET
+- Endpoint: {{baseurl}}/api/cards/:id
+- Header: mặc định
+- Body: không cần
+- Authorization: {{authToken}}
+- response: 
 
 ```json
 {
@@ -439,11 +439,11 @@ response: 200
 
 #### Delete Card 
 
-Chức năng: Xóa một thẻ dựa vào ID 
-Phương thức: DELETE
-Endpoint: {{baseurl}}/api/cards/{{cardID}}
-Header: Content-type = application/json 
-Response: 
+- Chức năng: Xóa một thẻ dựa vào ID 
+- Phương thức: DELETE
+- Endpoint: {{baseurl}}/api/cards/{{cardID}}
+- Header: Content-type = application/json 
+- Response: 
 
 ```json
 {
@@ -453,13 +453,13 @@ Response:
 
 #### Search card by name or definition 
 
-Chức năng: Fuzzy search các thẻ trong tất cả các deck của người dùng dựa vào từ khóa tìm kiếm của tên và định nghĩa thẻ 
-Phương thức: GET
-Endpoint: {{baseurl}}/api/cards/search/
-Header: Content-type = application/json 
-Param: 
-- name: tên thẻ cần tìm kiếm 
-- definition: định nghĩa cần tìm kiếm 
+- Chức năng: Fuzzy search các thẻ trong tất cả các deck của người dùng dựa vào từ khóa tìm kiếm của tên và định nghĩa thẻ 
+- Phương thức: GET
+- Endpoint: {{baseurl}}/api/cards/search/
+- Header: Content-type = application/json 
+- Param: 
+    - name: tên thẻ cần tìm kiếm 
+    - definition: định nghĩa cần tìm kiếm 
 
 ```json
 {
@@ -517,13 +517,13 @@ Param:
 
 #### Get all default decks 
 
-Chức năng: GET tất cả các deck có sẵn 
-Phương thức: GET
-Endpoint: {{baseurl}}/api/default-decks/
-Header: Content-type = application/json 
-Param: 
-- page: số trang muốn được hiển thị 
-- limit: số deck tối đa trong một trang 
+- Chức năng: GET tất cả các deck có sẵn 
+- Phương thức: GET
+- Endpoint: {{baseurl}}/api/default-decks/
+- Header: Content-type = application/json 
+- Param: 
+    - page: số trang muốn được hiển thị 
+    - limit: số deck tối đa trong một trang 
 
 response: 
 
@@ -549,11 +549,11 @@ response:
 
 #### Get 1 default deck by ID 
 
-Chức năng: Fuzzy search các thẻ trong tất cả các deck của người dùng dựa vào từ khóa tìm kiếm của tên và định nghĩa thẻ 
-Phương thức: GET
-Endpoint: {{baseurl}}/api/default-decks/{{deckID}}
-Header: mặc định 
-response: 
+- Chức năng: Fuzzy search các thẻ trong tất cả các deck của người dùng dựa vào từ khóa tìm kiếm của tên và định nghĩa thẻ 
+- Phương thức: GET
+- Endpoint: {{baseurl}}/api/default-decks/{{deckID}}
+- Header: mặc định 
+- response: 
 
 ```json
 {
@@ -570,13 +570,13 @@ response:
 
 #### Get all cards from default deck 
 
-Chức năng: Fuzzy search các thẻ trong tất cả các deck của người dùng dựa vào từ khóa tìm kiếm của tên và định nghĩa thẻ 
-Phương thức: GET
-Endpoint: {{baseurl}}/api/default-decks/{{deckID}}/cards
-Header: mặc định 
-param: 
-- page: số trang muốn hiển thị 
-- limit: số card tối đa mỗi trang 
+- Chức năng: Fuzzy search các thẻ trong tất cả các deck của người dùng dựa vào từ khóa tìm kiếm của tên và định nghĩa thẻ 
+- Phương thức: GET
+- Endpoint: {{baseurl}}/api/default-decks/{{deckID}}/cards
+- Header: mặc định 
+- param: 
+    - page: số trang muốn hiển thị 
+    - limit: số card tối đa mỗi trang 
 response: 
 
 ```json
@@ -614,11 +614,11 @@ response:
 
 #### add default card(s) to personal deck 
 
-Chức năng: Thêm một hoặc nhiều thẻ được chọn vào một deck cá nhân 
-Phương thức: POST
-Endpoint: {{baseurl}}/api/default-decks/{{deckID}}/cards/from-default
-Header: content-type = application/json  
-Body 
+- Chức năng: Thêm một hoặc nhiều thẻ được chọn vào một deck cá nhân 
+- Phương thức: POST
+- Endpoint: {{baseurl}}/api/default-decks/{{deckID}}/cards/from-default
+- Header: content-type = application/json  
+- Body 
 ```json
 {
     "defaultCardId": 
@@ -677,12 +677,12 @@ response:
 
 #### clone default deck to personal deck 
 
-Chức năng: Fuzzy search các thẻ trong tất cả các deck của người dùng dựa vào từ khóa tìm kiếm của tên và định nghĩa thẻ 
-Phương thức: POST
-Endpoint: {{baseurl}}/api/default-decks/{{deckID}}/cards
-Header: mặc định
-Body: để trống
-response: 
+- Chức năng: Fuzzy search các thẻ trong tất cả các deck của người dùng dựa vào từ khóa tìm kiếm của tên và định nghĩa thẻ 
+- Phương thức: POST
+- Endpoint: {{baseurl}}/api/default-decks/{{deckID}}/cards
+- Header: mặc định
+- Body: để trống
+- response: 
 ```json
 {
     "user_id": "68982698be9f3f4c66a27947",
@@ -701,14 +701,14 @@ response:
 
 ### Create Review Session 
 
-Chức năng: Tạo một phiên ôn tập (review session) 
-Phương thức: POST
-Endpoint: 
-	- đôi với deck cá nhân: {{baseurl}}/api/decks/{{deckID}}/review-session
-	- đôi với deck có sẵn: {{baseurl}}/api/default-decks/{{deckID}}/review-session
-*note:* Đối với deck có sẵn, thẻ sau khi submit sẽ không được thay đổi frequency 
-Header: Content-type = application/json 
-Body: 
+- Chức năng: Tạo một phiên ôn tập (review session) 
+- Phương thức: POST
+- Endpoint: 
+ 	- đôi với deck cá nhân: {{baseurl}}/api/decks/{{deckID}}/review-session
+ 	- đôi với deck có sẵn: {{baseurl}}/api/default-decks/{{deckID}}/review-session
+- *note:* Đối với deck có sẵn, thẻ sau khi submit sẽ không được thay đổi frequency 
+- Header: Content-type = application/json 
+- Body: 
 ```json
 {
   "Flashcard": 3,
@@ -767,29 +767,29 @@ response:
 
 ### Submit Card Review 
 
-Chức năng: Submit card trong một phiên ôn tập (review session) 
-Phương thức: POST
-Endpoint: {{baseurl}}/api/cards/{{cardID}}/review
-Header: Content-type = application/json 
-Body: 
+- Chức năng: Submit card trong một phiên ôn tập (review session) 
+- Phương thức: POST
+- Endpoint: {{baseurl}}/api/cards/{{cardID}}/review
+- Header: Content-type = application/json 
+- Body: 
 ```json
 {
 	"retrievalLevel": "easy",
 	"hintWasShown": false	
 }
 ```
-Authorization: {{authToken}}
-response: 200 
+- Authorization: {{authToken}}
+- response: 200 
 
 Note: nếu người dùng trả kết quả review là 'easy' và không sử dụng gợi ý, thì frequency sẽ bị giảm đi 1. ở đây là từ 3 (giá trị mặc định) thành 2. 
 
 ### Upload 
 
-Chức năng: Upload ảnh lên dịch vụ cloudinary 
-Phương thức: POST
-Endpoint: {{baseurl}}/api/upload
-Header: Content-type = multipart/form-data 
-Body: 
+- Chức năng: Upload ảnh lên dịch vụ cloudinary 
+- Phương thức: POST
+- Endpoint: {{baseurl}}/api/upload
+- Header: Content-type = multipart/form-data 
+- Body: 
 - Key: Image, type = image 
 - Value: Ảnh được upload từ máy
 
