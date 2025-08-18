@@ -286,3 +286,28 @@ exports.cloneDefaultDeck = asyncHandler(async (req, res) => {
 
     res.status(201).json(newDeck);
 });
+
+// @desc    Get all distinct categories for all decks of a user
+// @route   GET /api/decks/categories
+// @access  Private
+exports.getAllUserDeckCategories = asyncHandler(async (req, res) => {
+    // 1. Find all decks for the current user
+    const userDecks = await Deck.find({ user_id: req.user.id }).select('_id');
+    const deckIds = userDecks.map(deck => deck._id);
+
+    // 2. Aggregation pipeline to get categories and their card IDs
+    const categories = await Card.aggregate([
+        { $match: { deck_id: { $in: deckIds } } },
+        { $unwind: '$category' },
+        {
+            $group: {
+                _id: '$category',
+                cards: { $push: '$_id' }
+            }
+        },
+        { $project: { _id: 0, category: '$_id', cards: 1 } },
+        { $sort: { category: 1 } } // Optional: sort categories alphabetically
+    ]);
+
+    res.json(categories);
+});

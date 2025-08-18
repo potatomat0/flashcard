@@ -9,6 +9,8 @@ router.post('/', auth, asyncHandler(deckController.createDeck));
 router.get('/', auth, asyncHandler(deckController.getDecks));
 router.post('/clone/:defaultDeckId', auth, asyncHandler(deckController.cloneDefaultDeck));
 
+router.get('/categories', auth, asyncHandler(deckController.getAllUserDeckCategories));
+
 // Route to add a card from a default deck to a user's deck
 router.post('/:deckId/cards/from-default', auth, asyncHandler(cardController.addDefaultCardToDeck));
 
