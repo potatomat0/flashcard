@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
+// Explicitly require the .js file to avoid resolving the legacy file without extension
+const userController = require('../controllers/userController.js');
 const asyncHandler = require('../utils/asyncHandler');
 const auth = require('../middleware/authMiddleware');
 const { validateRegistration } = require('../middleware/validationMiddleware');
