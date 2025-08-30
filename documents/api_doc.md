@@ -119,6 +119,28 @@ Response:
 }
 ```
 
+#### Get current user profile 
+
+- Chức năng: Lấy thông tin người dùng hiện tại (dựa trên JWT)
+- Phương thức: GET 
+- Endpoint: {{baseurl}}/api/users/profile
+- Header: content-type = application/json
+- Authorization: {{authToken}}
+- Body: Không cần
+
+Response:
+
+```json
+{
+  "_id": "68982698be9f3f4c66a27947",
+  "username": "testUser1",
+  "name": "Nguyen Van A",
+  "email": "24550031@gm.uit.edu.vn",
+  "createdAt": "2025-08-17T07:46:59.035Z",
+  "updatedAt": "2025-08-18T08:10:12.100Z"
+}
+```
+
 #### Update User 
 
 - Chức năng: cập nhật thông tin người dùng 

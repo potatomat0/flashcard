@@ -86,6 +86,29 @@ exports.login = async (req, res) => {
     }
 };
 
+// @desc    Lấy thông tin user hiện tại
+// @route   GET /api/users/profile
+// @access  Private
+exports.getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({
+            _id: user._id,
+            username: user.username,
+            name: user.name,
+            email: user.email,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // @desc    Cập nhật user profile 
 // @route   PATCH /api/users/profile
 // @access  Private
