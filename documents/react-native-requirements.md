@@ -12,6 +12,7 @@ This document outlines the core requirements, architecture, and logic for buildi
     -   **Global Client State:** Zustand or React Context API for managing non-server state like authentication status.
 -   **API Client:** [Axios](https://axios-http.com/) for its robust feature set, including creating pre-configured instances and interceptors.
 -   **UI Library:** [React Native Paper](https://reactnativepaper.com/) (Material Design) or [UI Kitten](https://akveo.github.io/react-native-ui-kitten/) to provide a high-quality, consistent set of cross-platform components.
+-   **Persistent Cache Storage:** [@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage) to persist server-state cache locally so views load instantly on app start and resume.
 
 ## 2. High-Level Architecture
 
@@ -84,3 +85,35 @@ The core logic is identical to the web version, but implemented with native comp
     -   **Use Case:** Implement a system (either local or server-driven) to send reminders for users to complete their review sessions (e.g., "Time to review your Spanish deck!").
 -   **Platform-Specific UI:** Use React Native's `Platform` module to handle minor UI differences between iOS and Android where necessary (e.g., status bar padding, shadow styles).
 -   **Performance:** Ensure high-performance rendering by using `FlatList` correctly, memoizing components with `React.memo`, and avoiding expensive calculations in the render cycle.
+
+### 4.1. Persisted Request Caching (Required)
+
+-   **Goal:** Cache responses for current views to device storage so screens load fast without waiting for network on launch or tab switch. The cache only updates when underlying data changes.
+-   **Library:** Use React Query with an AsyncStorage persistor to persist and rehydrate the query cache.
+-   **Invalidation rules:**
+    -   On successful mutations (create/update/delete), invalidate corresponding queries (e.g., `['decks']`, `['deck', deckId]`, `['cards', deckId]`) so only changed data refetches.
+    -   Optionally revalidate on app focus and network reconnect for freshness.
+-   **Example setup (outline):**
+
+```tsx
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { QueryClient } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 5 * 60 * 1000, gcTime: 24 * 60 * 60 * 1000 } }
+});
+
+const persister = createAsyncStoragePersister({ storage: AsyncStorage });
+
+// Wrap app root
+<PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+  {/* Navigation + screens */}
+</PersistQueryClientProvider>
+
+// Example mutation invalidation
+// queryClient.invalidateQueries({ queryKey: ['decks'] })
+```
+
+-   This approach ensures data is read from cache first, then updated only when mutations or revalidation occur, matching the "cache only changes when data changes" requirement.
