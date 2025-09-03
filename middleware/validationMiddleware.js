@@ -33,4 +33,21 @@ const validateRegistration = [
 
 module.exports = {
   validateRegistration,
+  validateChangePassword: [
+    body('currentPassword')
+      .exists()
+      .withMessage('Current password is required.')
+      .isLength({ min: 1 })
+      .withMessage('Current password is required.'),
+    body('newPassword')
+      .isLength({ min: 6 })
+      .withMessage('New password must be at least 6 characters long.'),
+    (req, res, next) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+      next();
+    },
+  ],
 };

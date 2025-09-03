@@ -186,6 +186,31 @@ Response:
 	"message": "User accoutn and all associated data deleted successfully"
 }
 ```
+
+#### Change password 
+
+- Chức năng: Đổi mật khẩu người dùng hiện tại (dựa trên JWT)
+- Phương thức: PATCH
+- Endpoint: {{baseurl}}/api/users/password
+- Header: content-type = application/json
+- Authorization: {{authToken}}
+- Body:
+```json
+{
+  "currentPassword": "oldPassword123",
+  "newPassword": "newPassword456"
+}
+```
+
+Response (200):
+```json
+{
+  "message": "Password updated successfully"
+}
+```
+
+Lưu ý: `newPassword` phải có ít nhất 6 ký tự. Nếu `currentPassword` không đúng, API sẽ trả về 400 với thông báo lỗi tương ứng.
+
 ### Quản lý Deck
 
 #### Create deck 

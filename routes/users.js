@@ -4,7 +4,7 @@ const router = express.Router();
 const userController = require('../controllers/userController.js');
 const asyncHandler = require('../utils/asyncHandler');
 const auth = require('../middleware/authMiddleware');
-const { validateRegistration } = require('../middleware/validationMiddleware');
+const { validateRegistration, validateChangePassword } = require('../middleware/validationMiddleware');
 
 router.post('/register', validateRegistration, asyncHandler(userController.register));
 router.post('/login', asyncHandler(userController.login));
@@ -12,5 +12,6 @@ router.post('/login', asyncHandler(userController.login));
 router.get('/profile', auth, userController.getUserProfile);
 router.patch('/profile', auth, asyncHandler(userController.updateUserProfile));
 router.delete('/profile', auth, asyncHandler(userController.deleteUser));
+router.patch('/password', auth, validateChangePassword, asyncHandler(userController.changePassword));
 
 module.exports = router;

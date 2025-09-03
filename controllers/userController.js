@@ -163,3 +163,34 @@ exports.deleteUser = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// @desc    Change password
+// @route   PATCH /api/users/password
+// @access  Private
+exports.changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Current and new password are required' });
+        }
+
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const ok = await bcrypt.compare(currentPassword, user.passwordHash);
+        if (!ok) {
+            return res.status(400).json({ message: 'Current password is incorrect' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(newPassword, salt);
+        user.passwordHash = passwordHash;
+        await user.save();
+
+        return res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
