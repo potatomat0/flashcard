@@ -457,6 +457,12 @@ response: 200
 }
 ```
 
+Ghi chú bổ sung về trường mới `isArchived` (deck cá nhân):
+
+- `isArchived` (boolean) cho biết thẻ có bị loại khỏi các phiên review trong tương lai hay không. Mặc định `false`.
+- Có thể bật/tắt bằng `PATCH /api/cards/:id` với body `{ "isArchived": true }` hoặc `{ "isArchived": false }`.
+- Khi tạo phiên review (`POST /api/decks/:deckId/review-session`), các thẻ có `isArchived: true` sẽ bị bỏ qua và không được đưa vào pool.
+
 ![[Pasted image 20250811150502.png]]
 
 #### Delete Card 

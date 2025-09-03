@@ -10,6 +10,7 @@ const cardSchema = new mongoose.Schema({
 	example: {type: [String], default: []},
 	category: {type: [String], default: []},
 	frequency: {type: Number, min: 1, max: 5, default: 3},
+	isArchived: {type: Boolean, default: false},
 }, {timestamps: true})
 
 module.exports = mongoose.model('Card', cardSchema)
