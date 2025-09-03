@@ -1,0 +1,11 @@
+cronJobs:
+  - name: ping-flashcard-backend
+    schedule: "*/14 * * * *"
+    runtime: node
+    plan: free
+    buildCommand: "npm ci || npm install"
+    command: "node scripts/ping.js"
+    envVars:
+      - key: PING_URL
+        value: https://flashcard-rs95.onrender.com/
+
