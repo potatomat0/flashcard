@@ -170,46 +170,46 @@ exports.createReviewSession = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'MCQ method requires at least 4 cards in the deck to generate distractors.' });
     }
 
-    // 1. Create the session pool based on the largest requested method size
-    let sessionPool = [];
-    if (largestMethodSize >= deckSize) {
-        // If requested size is larger than deck, include all cards at least once
-        sessionPool = [...allCards]; // Add all unique cards
-        const remainingSlots = largestMethodSize - deckSize;
-        if (remainingSlots > 0) {
-            // Create a weighted pool for the remaining slots
-            let weightedPool = [];
-            allCards.forEach(card => {
-                for (let i = 0; i < (card.frequency || 3); i++) weightedPool.push(card);
-            });
-            // Fill remaining slots with weighted random cards
-            for (let i = 0; i < remainingSlots; i++) {
-                const randomIndex = Math.floor(Math.random() * weightedPool.length);
-                sessionPool.push(weightedPool[randomIndex]);
-            }
-        }
-    } else {
-        // If requested size is smaller than deck, use weighted selection for all slots
-        let weightedPool = [];
-        allCards.forEach(card => {
-            for (let i = 0; i < (card.frequency || 3); i++) weightedPool.push(card);
-        });
-        // Shuffle to randomize
-        for (let i = weightedPool.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [weightedPool[i], weightedPool[j]] = [weightedPool[j], weightedPool[i]];
-        }
-        sessionPool = [...new Set(weightedPool)].slice(0, largestMethodSize);
-    }
+    // New unique, weighted selection across all methods
+    // Helper: build weighted pool (array with repeated entries by frequency)
+    let weightedPool = [];
+    allCards.forEach(card => {
+        const freq = Number.isFinite(card.frequency) && card.frequency > 0 ? card.frequency : 3;
+        for (let i = 0; i < freq; i++) weightedPool.push(card);
+    });
 
-    // 2. Build the response by drawing from the shared session pool
+    // Remove all entries for a given card _id from weightedPool
+    const removeFromWeightedPool = (idStr) => {
+        weightedPool = weightedPool.filter(c => c._id.toString() !== idStr);
+    };
+
+    // Weighted selection without replacement
+    const pickUnique = (count, usedIds) => {
+        const picked = [];
+        const used = new Set(usedIds);
+        while (picked.length < count && weightedPool.length > 0) {
+            const idx = Math.floor(Math.random() * weightedPool.length);
+            const candidate = weightedPool[idx];
+            const idStr = candidate._id.toString();
+            // Remove the candidate from pool regardless to avoid infinite loop skew
+            removeFromWeightedPool(idStr);
+            if (used.has(idStr)) continue;
+            used.add(idStr);
+            picked.push(candidate);
+        }
+        return picked;
+    };
+
     const response = {};
-    for (const method in requestedMethods) {
-        const count = requestedMethods[method];
-        if (count === 0) continue;
+    const order = Object.entries(requestedMethods)
+        .filter(([, v]) => v && v > 0)
+        .map(([k, v]) => [k, v])
+        .sort((a, b) => b[1] - a[1]); // allocate larger requests first
 
-        // Shuffle the pool and take the required number of cards for the current method
-        const methodCards = [...sessionPool].sort(() => 0.5 - Math.random()).slice(0, count);
+    const usedIds = new Set();
+    for (const [method, size] of order) {
+        const methodCards = pickUnique(size, usedIds);
+        methodCards.forEach(c => usedIds.add(c._id.toString()));
 
         if (method === 'flashcard') {
             response.flashcard = methodCards;
@@ -224,7 +224,7 @@ exports.createReviewSession = asyncHandler(async (req, res) => {
                 return {
                     card_id: card._id,
                     prompt: card.name,
-                    options: options,
+                    options,
                     correctAnswer: card.definition
                 };
             });

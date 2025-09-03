@@ -726,8 +726,8 @@ response:
 - Chức năng: Tạo một phiên ôn tập (review session) 
 - Phương thức: POST
 - Endpoint: 
- 	- đôi với deck cá nhân: {{baseurl}}/api/decks/{{deckID}}/review-session
- 	- đôi với deck có sẵn: {{baseurl}}/api/default-decks/{{deckID}}/review-session
+	- đôi với deck cá nhân: {{baseurl}}/api/decks/{{deckID}}/review-session
+	- đôi với deck có sẵn: {{baseurl}}/api/default-decks/{{deckID}}/review-session
 - *note:* Đối với deck có sẵn, thẻ sau khi submit sẽ không được thay đổi frequency 
 - Header: Content-type = application/json 
 - Body: 
@@ -784,6 +784,17 @@ response:
     ]
 }
 ```
+
+#### Nguyên tắc chọn thẻ trong phiên ôn tập (deck cá nhân)
+
+- Không trùng lặp thẻ giữa các phương thức: nếu một thẻ đã được chọn cho MCQ thì sẽ không xuất hiện lại trong Flashcard hay Fill in the Blank (và ngược lại).
+- Không trùng lặp thẻ trong cùng một phương thức: mỗi thẻ xuất hiện nhiều nhất 1 lần cho mỗi phương thức trong 1 phiên.
+- Ưu tiên theo tần suất (frequency): việc chọn thẻ dựa trên “pool” có trọng số theo `frequency` (frequency cao → xác suất được chọn cao hơn).
+- Phân bổ theo nhu cầu: hệ thống sẽ phân bổ lần lượt theo phương thức có số lượng yêu cầu lớn hơn trước để tối đa hóa độ phủ thẻ.
+- Giới hạn bởi số thẻ duy nhất: nếu tổng số lượng yêu cầu vượt quá số thẻ duy nhất của deck, phiên vẫn đảm bảo không lặp và chỉ trả về tối đa số thẻ khả dụng (một số phương thức có thể nhận ít mục hơn yêu cầu).
+- Ràng buộc MCQ: phương thức MCQ yêu cầu tối thiểu 4 thẻ trong deck để tạo phương án nhiễu (distractors). Nếu không đủ, API sẽ trả lỗi phù hợp.
+
+Ghi chú: Đối với deck có sẵn (default deck), tần suất không bị cập nhật sau khi nộp kết quả; còn đối với deck cá nhân, tần suất (`frequency`) sẽ được cập nhật dựa trên kết quả nộp (easy/medium/hard và hintWasShown) qua endpoint `POST /api/cards/:id/review`.
 
 
 
