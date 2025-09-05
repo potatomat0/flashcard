@@ -348,25 +348,6 @@ Lưu ý: `newPassword` phải có ít nhất 6 ký tự. Nếu `currentPassword`
 	"message": "Deck and associated cards removed"
 }
 ```
-### Add card to deck 
-
-- Chức năng: Thêm một lá bài vào một bộ bài cụ thể
-- Phương thức: DELETE
-- Endpoint: {{baseurl}}/api/decks/{{deckID}}/cards
-- Header: content-type = application/json
-- Body: 
-```json
-{
-"name": "Silly",
-"definition": "ngốc, khờ",
-"hint": "stupid, fool",
-"category": ["adjective","personality"]
-}
-```
-Authorization: {{authToken}}
-response: 
-**Note**: API cho phép nhập nhiều card trong cùng một request
-
 ### Quản lý card
 
 #### Get all cards in deck
@@ -443,6 +424,24 @@ response:
     "word_type": ""
 }
 ```
+### Add card to deck 
+
+- Chức năng: Thêm một lá bài vào một bộ bài cụ thể
+- Phương thức: POST
+- Endpoint: {{baseurl}}/api/decks/{{deckID}}/cards
+- Header: content-type = application/json
+- Body: 
+```json
+{
+"name": "Silly",
+"definition": "ngốc, khờ",
+"hint": "stupid, fool",
+"category": ["adjective","personality"]
+}
+```
+Authorization: {{authToken}}
+response: 
+**Note**: API cho phép nhập nhiều card trong cùng một request
 
 #### Update a card 
 
